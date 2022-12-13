@@ -1,0 +1,12 @@
+[ignore]
+
+[include]
+./src/core.ts
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]
