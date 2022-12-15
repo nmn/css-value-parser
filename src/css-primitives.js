@@ -18,10 +18,9 @@ export class Px implements NumericUnit {
     return `${this.value}px`;
   }
 
-  static parse: Parser<Px> = Parser.sequence(
-    Parser.float,
-    Parser.string("px").map(() => "px")
-  ).map(([value, _]) => new Px(value));
+  static parse: Parser<Px> = Parser.float
+    .skip(Parser.string("px"))
+    .map((v) => new Px(v));
 }
 
 export class Percent implements NumericUnit {
@@ -33,10 +32,9 @@ export class Percent implements NumericUnit {
     return `${this.value}%`;
   }
 
-  static parse: Parser<Percent> = Parser.sequence(
-    Parser.float,
-    Parser.string("%").map(() => "%")
-  ).map(([value, _]) => new Percent(value));
+  static parse: Parser<Percent> = Parser.float
+    .skip(Parser.string("%"))
+    .map((v) => new Percent(v));
 }
 
 export class Em implements NumericUnit {
@@ -48,10 +46,9 @@ export class Em implements NumericUnit {
     return `${this.value}em`;
   }
 
-  static parse: Parser<Em> = Parser.sequence(
-    Parser.float,
-    Parser.string("em").map(() => "em")
-  ).map(([value, _]) => new Em(value));
+  static parse: Parser<Em> = Parser.float
+    .skip(Parser.string("em"))
+    .map((v) => new Em(v));
 }
 
 export class Rem implements NumericUnit {
@@ -63,10 +60,9 @@ export class Rem implements NumericUnit {
     return `${this.value}rem`;
   }
 
-  static parse: Parser<Rem> = Parser.sequence(
-    Parser.float,
-    Parser.string("rem").map(() => "rem")
-  ).map(([value, _]) => new Rem(value));
+  static parse: Parser<Rem> = Parser.float
+    .skip(Parser.string("rem"))
+    .map((v) => new Rem(v));
 }
 
 export class Vh implements NumericUnit {
@@ -78,10 +74,9 @@ export class Vh implements NumericUnit {
     return `${this.value}vh`;
   }
 
-  static parse: Parser<Vh> = Parser.sequence(
-    Parser.float,
-    Parser.string("vh").map(() => "vh")
-  ).map(([value, _]) => new Vh(value));
+  static parse: Parser<Vh> = Parser.float
+    .skip(Parser.string("vh"))
+    .map((v) => new Vh(v));
 }
 
 export class Vw implements NumericUnit {
@@ -93,10 +88,9 @@ export class Vw implements NumericUnit {
     return `${this.value}vw`;
   }
 
-  static parse: Parser<Vw> = Parser.sequence(
-    Parser.float,
-    Parser.string("vw").map(() => "vw")
-  ).map(([value, _]) => new Vw(value));
+  static parse: Parser<Vw> = Parser.float
+    .skip(Parser.string("vw"))
+    .map((v) => new Vw(v));
 }
 
 export class Vmin implements NumericUnit {
@@ -108,10 +102,9 @@ export class Vmin implements NumericUnit {
     return `${this.value}vmin`;
   }
 
-  static parse: Parser<Vmin> = Parser.sequence(
-    Parser.float,
-    Parser.string("vmin").map(() => "vmin")
-  ).map(([value, _]) => new Vmin(value));
+  static parse: Parser<Vmin> = Parser.float
+    .skip(Parser.string("vmin"))
+    .map((v) => new Vmin(v));
 }
 
 export class Vmax implements NumericUnit {
@@ -123,10 +116,9 @@ export class Vmax implements NumericUnit {
     return `${this.value}vmax`;
   }
 
-  static parse: Parser<Vmax> = Parser.sequence(
-    Parser.float,
-    Parser.string("vmax").map(() => "vmax")
-  ).map(([value, _]) => new Vmax(value));
+  static parse: Parser<Vmax> = Parser.float
+    .skip(Parser.string("vmax"))
+    .map((v) => new Vmax(v));
 }
 
 export class Ch implements NumericUnit {
@@ -138,10 +130,9 @@ export class Ch implements NumericUnit {
     return `${this.value}ch`;
   }
 
-  static parse: Parser<Ch> = Parser.sequence(
-    Parser.float,
-    Parser.string("ch").map(() => "ch")
-  ).map(([value, _]) => new Ch(value));
+  static parse: Parser<Ch> = Parser.float
+    .skip(Parser.string("ch"))
+    .map((v) => new Ch(v));
 }
 
 export class Ex implements NumericUnit {
@@ -153,10 +144,9 @@ export class Ex implements NumericUnit {
     return `${this.value}ex`;
   }
 
-  static parse: Parser<Ex> = Parser.sequence(
-    Parser.float,
-    Parser.string("ex").map(() => "ex")
-  ).map(([value, _]) => new Ex(value));
+  static parse: Parser<Ex> = Parser.float
+    .skip(Parser.string("ex"))
+    .map((v) => new Ex(v));
 }
 
 export class Cm implements NumericUnit {
@@ -168,10 +158,9 @@ export class Cm implements NumericUnit {
     return `${this.value}cm`;
   }
 
-  static parse: Parser<Cm> = Parser.sequence(
-    Parser.float,
-    Parser.string("cm").map(() => "cm")
-  ).map(([value, _]) => new Cm(value));
+  static parse: Parser<Cm> = Parser.float
+    .skip(Parser.string("cm"))
+    .map((v) => new Cm(v));
 }
 
 export class Mm implements NumericUnit {
@@ -183,10 +172,9 @@ export class Mm implements NumericUnit {
     return `${this.value}mm`;
   }
 
-  static parse: Parser<Mm> = Parser.sequence(
-    Parser.float,
-    Parser.string("mm").map(() => "mm")
-  ).map(([value, _]) => new Mm(value));
+  static parse: Parser<Mm> = Parser.float
+    .skip(Parser.string("mm"))
+    .map((v) => new Mm(v));
 }
 
 export class In implements NumericUnit {
@@ -198,10 +186,9 @@ export class In implements NumericUnit {
     return `${this.value}in`;
   }
 
-  static parse: Parser<In> = Parser.sequence(
-    Parser.float,
-    Parser.string("in").map(() => "in")
-  ).map(([value, _]) => new In(value));
+  static parse: Parser<In> = Parser.float
+    .skip(Parser.string("in"))
+    .map((v) => new In(v));
 }
 
 export interface RgbaEquivalent {
@@ -241,7 +228,7 @@ export class HashColor implements RgbaEquivalent {
   static parse: Parser<HashColor> = Parser.sequence(
     Parser.string("#"),
     Parser.regex(/[0-9a-fA-F]{6, 8}/)
-  ).map(([_, value]) => new HashColor(value));
+  ).map(([_, value]: [string, string]) => new HashColor(value));
 }
 
 export class RgbColor implements RgbaEquivalent {
@@ -259,8 +246,17 @@ export class RgbColor implements RgbaEquivalent {
     return `rgb(${this.r},${this.g},${this.b})`;
   }
 
-  static #rgbNumber: Parser<number> = Parser.float.flatMap((number) =>
-    number >= 0 && number <= 255 ? Parser.always(number) : Parser.never()
+  static #rgbNumber: Parser<number> = Parser.oneOf(
+    Parser.float.flatMap((number) =>
+      number >= 0 && number <= 255 ? Parser.always(number) : Parser.never()
+    ),
+    Percent.parse
+      .flatMap((percent) =>
+        percent.value >= 0 && percent.value <= 100
+          ? Parser.always(percent)
+          : Parser.never()
+      )
+      .map((percent) => Math.round(percent.value * 2.55))
   );
 
   static #commaSeparated: Parser<[number, number, number]> = Parser.sequence(

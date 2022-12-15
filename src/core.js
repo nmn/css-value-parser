@@ -49,7 +49,7 @@ export class Parser<+T> {
     });
   }
 
-  skip(skipParser: Parser<void>): Parser<T> {
+  skip(skipParser: Parser<mixed>): Parser<T> {
     return this.flatMap((output) => skipParser.map(() => output));
   }
 
@@ -165,10 +165,11 @@ export class Parser<+T> {
     return new Error(`Expected letter, got ${input.first}`);
   });
 
-  static int: Parser<number> = Parser.sequence(
-    Parser.regex(/[1-9]/),
-    Parser.zeroOrMore(Parser.digit)
-  ).map(([first, rest]) => parseInt(first + rest.join(""), 10));
+  static int: Parser<number> = Parser.sequence<
+    [string, $ReadOnlyArray<string>]
+  >(Parser.regex(/[1-9]/), Parser.zeroOrMore(Parser.digit)).map(
+    ([first, rest]) => parseInt(first + rest.join(""), 10)
+  );
 
   static float: Parser<number> = Parser.sequence<
     [-1 | 1, number, ".", $ReadOnlyArray<string>]
