@@ -2,8 +2,6 @@
 
 import { SubString } from "./base-types.js";
 
-import { start } from "repl";
-
 export class Parser<+T> {
   +run: (input: SubString) => T | Error;
 
@@ -49,6 +47,10 @@ export class Parser<+T> {
     });
   }
 
+  surroundedBy(surroundingParser: Parser<mixed>): Parser<T> {
+    return this.prefix(surroundingParser).skip(surroundingParser);
+  }
+
   skip(skipParser: Parser<mixed>): Parser<T> {
     return this.flatMap((output) => skipParser.map(() => output));
   }
@@ -57,7 +59,7 @@ export class Parser<+T> {
     return this.or(Parser.always(undefined));
   }
 
-  prefix(prefixParser: Parser<void>): Parser<T> {
+  prefix(prefixParser: Parser<mixed>): Parser<T> {
     return prefixParser.flatMap(() => this);
   }
 
@@ -69,16 +71,30 @@ export class Parser<+T> {
     return new Parser(() => output);
   }
 
+  where(predicate: (T) => boolean): Parser<T> {
+    return this.flatMap((output) => {
+      if (predicate(output)) {
+        return Parser.always(output);
+      }
+      return Parser.never();
+    });
+  }
+
   // T will be a union of the output types of the parsers
   static oneOf<T>(...parsers: $ReadOnlyArray<Parser<T>>): Parser<T> {
     return new Parser((input): T | Error => {
+      let errors = [];
       for (const parser of parsers) {
         const output = parser.run(input);
         if (!(output instanceof Error)) {
           return output;
         }
+        errors.push(output);
       }
-      return new Error("No parser matched");
+      return new Error(
+        "No parser matched\n" +
+          errors.map((err) => "- " + err.toString()).join("\n")
+      );
     });
   }
 
@@ -89,6 +105,12 @@ export class Parser<+T> {
     return new ParserSequence(...parsers);
   }
 
+  static setOf<T: $ReadOnlyArray<mixed>>(
+    ...parsers: $TupleMap<T, <Output>(Output) => Parser<Output>>
+  ): ParserSet<T> {
+    return new ParserSet(...parsers);
+  }
+
   static zeroOrMore<T>(parser: Parser<T>): ZeroOrMoreParsers<T> {
     return new ZeroOrMoreParsers(parser);
   }
@@ -97,8 +119,8 @@ export class Parser<+T> {
     return new OneOrMoreParsers(parser);
   }
 
-  static string(str: string): Parser<string> {
-    return new Parser((input): string | Error => {
+  static string<T: string = string>(str: T): Parser<T> {
+    return new Parser((input): T | Error => {
       const { startIndex, endIndex } = input;
       if (startIndex + str.length - 1 > endIndex) {
         return new Error("End of input");
@@ -111,6 +133,34 @@ export class Parser<+T> {
         `Expected ${str}, got ${input.string.slice(startIndex)}`
       );
     });
+  }
+
+  static get quotedString(): Parser<string> {
+    // TODO: Add support for escaped code-points
+    const doubleQuotes = Parser.sequence(
+      Parser.string('"'),
+      Parser.zeroOrMore(
+        Parser.oneOf(
+          Parser.string('\\"').map(() => '"'),
+          Parser.string("\\\\").map(() => "\\"),
+          Parser.takeWhile((char) => char !== '"' && char !== "\\")
+        )
+      ),
+      Parser.string('"')
+    ).map(([, chars]) => chars.join(""));
+    const singleQuotes = Parser.sequence(
+      Parser.string("'"),
+      Parser.zeroOrMore(
+        Parser.oneOf(
+          Parser.string("\\'").map(() => "'"),
+          Parser.string("\\\\").map(() => "\\"),
+          Parser.takeWhile((char) => char !== "'" && char !== "\\")
+        )
+      ),
+      Parser.string("'")
+    ).map(([, chars]) => chars.join(""));
+
+    return Parser.oneOf(doubleQuotes, singleQuotes);
   }
 
   static regex(regex: RegExp): Parser<string> {
@@ -165,28 +215,39 @@ export class Parser<+T> {
     return new Error(`Expected letter, got ${input.first}`);
   });
 
-  static int: Parser<number> = Parser.sequence<
+  static natural: Parser<number> = Parser.sequence<
     [string, $ReadOnlyArray<string>]
-  >(Parser.regex(/[1-9]/), Parser.zeroOrMore(Parser.digit)).map(
-    ([first, rest]) => parseInt(first + rest.join(""), 10)
+  >(
+    Parser.digit.where((digit) => digit !== "0"),
+    Parser.zeroOrMore(Parser.digit)
+  ).map(([first, rest]) => parseInt(first + rest.join(""), 10));
+
+  static whole: Parser<number> = Parser.oneOf(
+    Parser.string("0").map(() => 0),
+    Parser.natural
   );
+
+  static integer: Parser<number> = Parser.sequence<[-1 | 1, number]>(
+    Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
+    Parser.whole.map((int) => int || 0)
+  ).map(([sign, int]) => sign * int);
 
   static float: Parser<number> = Parser.sequence<
     [-1 | 1, number, ".", $ReadOnlyArray<string>]
   >(
     Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
-    Parser.int.optional.map((int) => int || 0),
+    Parser.natural.optional.map((int) => int || 0),
     Parser.string("."),
     Parser.oneOrMore(Parser.digit)
   ).map(
     ([sign, int, _, digits]) => sign * parseFloat(int + "." + digits.join(""))
   );
 
-  static whitespace: Parser<void> = Parser.oneOrMore(Parser.string(" ")).map(
+  static space: Parser<void> = Parser.oneOrMore(Parser.string(" ")).map(
     () => undefined
   );
 
-  static whitespaceOrNewline: Parser<void> = Parser.oneOrMore(
+  static whitespace: Parser<void> = Parser.oneOrMore(
     Parser.oneOf(
       // Spaces
       Parser.string(" "),
@@ -275,18 +336,16 @@ class ParserSequence<+T: $ReadOnlyArray<mixed>> extends Parser<T> {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
 
-      const output: $TupleMap<T, <O>(O) => O> = getThis().parsers.map(
-        (parser) => {
-          if (failed) {
-            return Error("already failed");
-          }
-          const result = parser.run(input);
-          if (result instanceof Error) {
-            failed = result;
-          }
-          return result;
+      const output: $FlowFixMe = parsers.map((parser) => {
+        if (failed) {
+          return Error("already failed");
         }
-      );
+        const result = parser.run(input);
+        if (result instanceof Error) {
+          failed = result;
+        }
+        return result;
+      });
 
       if (failed) {
         input.startIndex = startIndex;
@@ -294,18 +353,78 @@ class ParserSequence<+T: $ReadOnlyArray<mixed>> extends Parser<T> {
         return failed;
       }
 
-      return (output: $FlowFixMe);
+      return (output: T | Error);
     });
-    const getThis = () => this;
     this.parsers = parsers;
   }
 
   separatedBy(
-    separator: Parser<void>
+    separator: Parser<mixed>
   ): ParserSequence<$TupleMap<T, <O>(O) => O>> {
     return new ParserSequence(
       ...this.parsers.map(<X>(parser: Parser<X>, index): Parser<X> =>
-        index === 0 ? parser : parser.prefix(separator)
+        index === 0 ? parser : parser.prefix(separator.map(() => undefined))
+      )
+    );
+  }
+}
+
+// Similar to ParserSequence, but the parsers can occur in any order.
+class ParserSet<+T: $ReadOnlyArray<mixed>> extends Parser<T> {
+  +parsers: $TupleMap<T, <X>(X) => Parser<X>>;
+
+  constructor(...parsers: $TupleMap<T, <X>(X) => Parser<X>>) {
+    super((input): T | Error => {
+      const { startIndex, endIndex } = input;
+      let failed: null | Error = null;
+
+      const output: $FlowFixMe = [];
+      const indices: Set<number> = new Set();
+
+      for (let i = 0; i < parsers.length; i++) {
+        let found = false;
+        let errors = [];
+        for (let j = 0; j < parsers.length && !indices.has(j); j++) {
+          const parser = parsers[j];
+          let result = parser.run(input);
+          if (result instanceof Error) {
+            errors.push(result);
+          } else {
+            found = true;
+            output[j] = result;
+            indices.add(j);
+            break;
+          }
+        }
+        if (found) {
+          continue;
+        } else {
+          failed = new Error(
+            `Expected one of ${parsers
+              .map((parser) => parser.toString())
+              .join(", ")} but got ${errors
+              .map((error) => error.message)
+              .join(", ")}`
+          );
+          break;
+        }
+      }
+
+      if (failed) {
+        input.startIndex = startIndex;
+        input.endIndex = endIndex;
+        return failed;
+      }
+
+      return (output: T | Error);
+    });
+    this.parsers = parsers;
+  }
+
+  separatedBy(separator: Parser<mixed>): ParserSet<$TupleMap<T, <O>(O) => O>> {
+    return new ParserSet(
+      ...this.parsers.map(<X>(parser: Parser<X>, index): Parser<X> =>
+        index === 0 ? parser : parser.prefix(separator.map(() => undefined))
       )
     );
   }

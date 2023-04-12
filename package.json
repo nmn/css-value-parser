@@ -1,5 +1,6 @@
 {
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@babel/cli": "^7.19.3",
     "eslint": "^8.29.0",
     "flow-bin": "^0.195.2"
