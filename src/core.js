@@ -204,8 +204,9 @@ export class Parser<+T> {
   static get digit(): Parser<string> {
     return new Parser((input): string | Error => {
       if (input.first >= "0" && input.first <= "9") {
+        const first = input.first;
         input.startIndex++;
-        return input.first;
+        return first;
       }
       return new Error(`Expected digit, got ${input.first}`);
     });
@@ -232,9 +233,8 @@ export class Parser<+T> {
   }
 
   static get whole(): Parser<number> {
-    return Parser.oneOf(
-      Parser.string("0").map(() => 0),
-      Parser.natural
+    return Parser.sequence(Parser.oneOrMore(Parser.digit)).map(([digits]) =>
+      parseInt(digits.join(""), 10)
     );
   }
 
@@ -248,7 +248,7 @@ export class Parser<+T> {
   static get float(): Parser<number> {
     return Parser.sequence(
       Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
-      Parser.natural.optional.map((int) => int || 0),
+      Parser.whole.optional.map((int) => int || 0),
       Parser.string("."),
       Parser.oneOrMore(Parser.digit)
     ).map(

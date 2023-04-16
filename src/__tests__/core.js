@@ -104,6 +104,65 @@ describe("Parser", () => {
     });
   });
 
+  describe("digit", () => {
+    it("parses a digit", () => {
+      const parser = Parser.digit;
+      expect(parser.parse("0")).toEqual("0");
+      expect(parser.parse("1")).toEqual("1");
+      expect(parser.parse("2")).toEqual("2");
+      expect(parser.parse("3")).toEqual("3");
+      expect(parser.parse("4")).toEqual("4");
+      expect(parser.parse("5")).toEqual("5");
+      expect(parser.parse("6")).toEqual("6");
+      expect(parser.parse("7")).toEqual("7");
+      expect(parser.parse("8")).toEqual("8");
+      expect(parser.parse("9")).toEqual("9");
+    });
+
+    it("fails to parse a different string", () => {
+      const parser = Parser.digit;
+      expect(parser.parse("foo") instanceof Error).toBe(true);
+      expect(parser.parse("a") instanceof Error).toBe(true);
+      expect(parser.parse("A") instanceof Error).toBe(true);
+      expect(parser.parse(" ") instanceof Error).toBe(true);
+    });
+  });
+
+  describe("natural", () => {
+    it("parses a natural number", () => {
+      const parser = Parser.natural;
+      expect(parser.parse("1")).toEqual(1);
+      expect(parser.parse("1234567890")).toEqual(1234567890);
+    });
+
+    it("fails to parse a different string", () => {
+      const parser = Parser.natural;
+      expect(parser.parse("foo") instanceof Error).toBe(true);
+      expect(parser.parse(".0") instanceof Error).toBe(true);
+      expect(parser.parse(".") instanceof Error).toBe(true);
+      expect(parser.parse("-1") instanceof Error).toBe(true);
+      expect(parser.parse("-1234567890") instanceof Error).toBe(true);
+    });
+  });
+
+  describe("whole", () => {
+    it("parses a natural number", () => {
+      const parser = Parser.whole;
+      expect(parser.parse("0")).toEqual(0);
+      expect(parser.parse("1")).toEqual(1);
+      expect(parser.parse("1234567890")).toEqual(1234567890);
+    });
+
+    it("fails to parse a different string", () => {
+      const parser = Parser.natural;
+      expect(parser.parse("foo") instanceof Error).toBe(true);
+      expect(parser.parse(".0") instanceof Error).toBe(true);
+      expect(parser.parse(".") instanceof Error).toBe(true);
+      expect(parser.parse("-1") instanceof Error).toBe(true);
+      expect(parser.parse("-1234567890") instanceof Error).toBe(true);
+    });
+  });
+
   describe("integer", () => {
     it("parses an integer", () => {
       const parser = Parser.integer;
@@ -114,15 +173,11 @@ describe("Parser", () => {
       expect(parser.parse("-1234567890")).toEqual(-1234567890);
     });
 
-    // it("fails to parse a different string", () => {
-    //   const parser = Parser.integer;
-    //   expect(parser.parse("foo") instanceof Error).toBe(true);
-    //   expect(parser.parse("1.0") instanceof Error).toBe(true);
-    //   expect(parser.parse("1.") instanceof Error).toBe(true);
-    //   expect(parser.parse(".0") instanceof Error).toBe(true);
-    //   expect(parser.parse("0.0") instanceof Error).toBe(true);
-    //   expect(parser.parse("0.") instanceof Error).toBe(true);
-    //   expect(parser.parse(".") instanceof Error).toBe(true);
-    // });
+    it("fails to parse a different string", () => {
+      const parser = Parser.integer;
+      expect(parser.parse("foo") instanceof Error).toBe(true);
+      expect(parser.parse(".0") instanceof Error).toBe(true);
+      expect(parser.parse(".") instanceof Error).toBe(true);
+    });
   });
 });
