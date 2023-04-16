@@ -94,10 +94,11 @@ export class Inset extends BasicShape {
   }
 }
 
+export type TCircleRadius = LengthPercentage | "closest-side" | "farthest-side";
 export class Circle extends BasicShape {
-  +radius: LengthPercentage | "closest-side" | "farthest-side";
+  +radius: TCircleRadius;
   +position: ?Position;
-  constructor(radius: LengthPercentage, position: ?Position) {
+  constructor(radius: TCircleRadius, position: ?Position) {
     super();
     this.radius = radius;
     this.position = position;
@@ -108,12 +109,11 @@ export class Circle extends BasicShape {
     return `circle(${radius.toString()}${positionStr})`;
   }
   static get parse(): Parser<Circle> {
-    const radius: Parser<LengthPercentage | "closest-side" | "farthest-side"> =
-      Parser.oneOf(
-        lengthPercentage,
-        Parser.string("closest-side"),
-        Parser.string("farthest-side")
-      );
+    const radius: Parser<TCircleRadius> = Parser.oneOf(
+      lengthPercentage,
+      Parser.string("closest-side"),
+      Parser.string("farthest-side")
+    );
 
     const position: Parser<Position> = Parser.sequence(
       Parser.string("at"),
@@ -132,12 +132,12 @@ export class Circle extends BasicShape {
 }
 
 export class Ellipse extends BasicShape {
-  +radiusX: LengthPercentage | "closest-side" | "farthest-side";
-  +radiusY: LengthPercentage | "closest-side" | "farthest-side";
+  +radiusX: TCircleRadius;
+  +radiusY: TCircleRadius;
   +position: ?Position;
   constructor(
-    radiusX: LengthPercentage,
-    radiusY: LengthPercentage,
+    radiusX: TCircleRadius,
+    radiusY: TCircleRadius,
     position: ?Position
   ) {
     super();
@@ -152,19 +152,18 @@ export class Ellipse extends BasicShape {
   }
 
   static get parse(): Parser<Ellipse> {
-    const radius: Parser<LengthPercentage | "closest-side" | "farthest-side"> =
-      Parser.oneOf(
-        lengthPercentage,
-        Parser.string("closest-side"),
-        Parser.string("farthest-side")
-      );
+    const radius: Parser<TCircleRadius> = Parser.oneOf(
+      lengthPercentage,
+      Parser.string("closest-side"),
+      Parser.string("farthest-side")
+    );
 
     const position: Parser<Position> = Parser.sequence(
       Parser.string("at"),
       Position.parse
     )
       .separatedBy(Parser.whitespace)
-      .map(([, v]) => v);
+      .map(([_at, v]) => v);
 
     return Parser.sequence(
       Parser.string("ellipse("),
@@ -208,16 +207,12 @@ export class Polygon extends BasicShape {
       Parser.string("polygon("),
       fillRule.optional,
       Parser.oneOrMore(
-        Parser.sequence<[LengthPercentage, LengthPercentage]>(
-          lengthPercentage,
-          lengthPercentage
-        ).separatedBy(Parser.whitespace)
+        Parser.sequence(lengthPercentage, lengthPercentage).separatedBy(
+          Parser.whitespace
+        )
       ),
       Parser.string(")").prefix(Parser.whitespace.optional)
-    ).map(
-      ([_, fillRule, points]: [string, FillRule, Points, string]) =>
-        new Polygon(points, fillRule)
-    );
+    ).map(([_, fillRule, points]) => new Polygon(points, fillRule));
   }
 }
 
@@ -231,7 +226,7 @@ export class Path extends BasicShape {
   }
   toString(): string {
     const fillRule = this.fillRule != null ? `${this.fillRule}, ` : "";
-    return `path(${fillRule}${this.path})`;
+    return `path(${fillRule}"${this.path}")`;
   }
   static get parse(): Parser<Path> {
     return Parser.sequence(

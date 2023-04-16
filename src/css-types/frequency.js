@@ -17,7 +17,7 @@ export class Frequency {
     }
     return `${this.value}${this.unit}`;
   }
-  static parse: Parser<Frequency> = Parser.sequence<[number, "Hz" | "KHz"]>(
+  static parse: Parser<Frequency> = Parser.sequence(
     number,
     Parser.oneOf(Parser.string<"Hz">("Hz"), Parser.string<"KHz">("KHz"))
   ).map(([value, unit]) => new Frequency(value, unit));

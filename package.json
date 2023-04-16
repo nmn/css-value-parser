@@ -1,8 +1,20 @@
 {
-  "dependencies": {},
+  "name": "typed-css-parser",
   "devDependencies": {
     "@babel/cli": "^7.19.3",
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-flow": "^7.21.4",
     "eslint": "^8.29.0",
-    "flow-bin": "^0.195.2"
+    "flow-bin": "^0.204.0",
+    "jest": "^29.5.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    },
+    "testEnvironment": "node"
   }
 }

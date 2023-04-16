@@ -7,7 +7,7 @@ export const alphaNumber: Parser<number> = Parser.float.where(
   (v) => v >= 0 && v <= 1
 );
 
-export const alphaValue: Parser<number | Percentage> = Parser.oneOf(
+export const alphaValue: Parser<number> = Parser.oneOf(
   alphaNumber,
-  Percentage.parse
+  Percentage.parse.map((v) => v.value / 100)
 );

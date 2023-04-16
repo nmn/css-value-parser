@@ -45,34 +45,22 @@ export class Position {
       Parser.string("bottom")
     );
 
-    const horizontal: Parser<Horizontal> = Parser.sequence<
-      [HorizonalKeyword, ?LengthPercentage]
-    >(
+    const horizontal: Parser<Horizontal> = Parser.sequence(
       horizontalKeyword,
       lengthPercentage.prefix(Parser.whitespace).optional
     ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
 
-    const vertical: Parser<Vertical> = Parser.sequence<
-      [VerticalKeyword, ?LengthPercentage]
-    >(verticalKeyword, lengthPercentage.prefix(Parser.whitespace).optional).map(
-      ([keyword, length]) => (length ? [keyword, length] : keyword)
-    );
-    return Parser.oneOf<[Horizontal, Vertical]>(
-      Parser.setOf<[Horizontal, Vertical]>(horizontal, vertical).separatedBy(
+    const vertical: Parser<Vertical> = Parser.sequence(
+      verticalKeyword,
+      lengthPercentage.prefix(Parser.whitespace).optional
+    ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
+    return Parser.oneOf(
+      Parser.setOf(horizontal, vertical).separatedBy(Parser.whitespace),
+      Parser.setOf(horizontal, lengthPercentage).separatedBy(Parser.whitespace),
+      Parser.setOf(lengthPercentage, vertical).separatedBy(Parser.whitespace),
+      Parser.sequence(lengthPercentage, lengthPercentage).separatedBy(
         Parser.whitespace
-      ),
-      Parser.setOf<[Horizontal, Vertical]>(
-        horizontal,
-        lengthPercentage
-      ).separatedBy(Parser.whitespace),
-      Parser.setOf<[Horizontal, Vertical]>(
-        lengthPercentage,
-        vertical
-      ).separatedBy(Parser.whitespace),
-      Parser.sequence<[Horizontal, Vertical]>(
-        lengthPercentage,
-        lengthPercentage
-      ).separatedBy(Parser.whitespace)
+      )
     ).map(([h, v]) => new Position(h, v));
   }
 }

@@ -116,14 +116,7 @@ export class BorderRadiusShorthand {
   }
 
   static get parse(): Parser<BorderRadiusShorthand> {
-    const spaceSeparatedRadii = Parser.sequence<
-      [
-        LengthPercentage,
-        ?LengthPercentage,
-        ?LengthPercentage,
-        ?LengthPercentage
-      ]
-    >(
+    const spaceSeparatedRadii = Parser.sequence(
       lengthPercentage,
       lengthPercentage.prefix(Parser.whitespace).optional,
       lengthPercentage.prefix(Parser.whitespace).optional,

@@ -9,6 +9,10 @@ export class Parser<+T> {
     this.run = parser;
   }
 
+  parse(input: string): T | Error {
+    return this.run(new SubString(input));
+  }
+
   map<NewT>(f: (T) => NewT): Parser<NewT> {
     return new Parser((input): NewT | Error => {
       const oldOutput = this.run(input);
@@ -47,8 +51,11 @@ export class Parser<+T> {
     });
   }
 
-  surroundedBy(surroundingParser: Parser<mixed>): Parser<T> {
-    return this.prefix(surroundingParser).skip(surroundingParser);
+  surroundedBy(
+    prefix: Parser<mixed>,
+    suffix: Parser<mixed> = prefix
+  ): Parser<T> {
+    return this.prefix(prefix).skip(suffix);
   }
 
   skip(skipParser: Parser<mixed>): Parser<T> {
@@ -99,15 +106,13 @@ export class Parser<+T> {
   }
 
   // Variadic Generics: ...T,
-  static sequence<T: $ReadOnlyArray<mixed>>(
-    ...parsers: $TupleMap<T, <Output>(Output) => Parser<Output>>
+  static sequence<T: $ReadOnlyArray<Parser<mixed>>>(
+    ...parsers: T
   ): ParserSequence<T> {
     return new ParserSequence(...parsers);
   }
 
-  static setOf<T: $ReadOnlyArray<mixed>>(
-    ...parsers: $TupleMap<T, <Output>(Output) => Parser<Output>>
-  ): ParserSet<T> {
+  static setOf<T: $ReadOnlyArray<Parser<mixed>>>(...parsers: T): ParserSet<T> {
     return new ParserSet(...parsers);
   }
 
@@ -119,7 +124,7 @@ export class Parser<+T> {
     return new OneOrMoreParsers(parser);
   }
 
-  static string<T: string = string>(str: T): Parser<T> {
+  static string<T: string>(str: T): Parser<T> {
     return new Parser((input): T | Error => {
       const { startIndex, endIndex } = input;
       if (startIndex + str.length - 1 > endIndex) {
@@ -137,7 +142,7 @@ export class Parser<+T> {
 
   static get quotedString(): Parser<string> {
     // TODO: Add support for escaped code-points
-    const doubleQuotes = Parser.sequence(
+    const doubleQuotes: Parser<string> = Parser.sequence(
       Parser.string('"'),
       Parser.zeroOrMore(
         Parser.oneOf(
@@ -196,67 +201,77 @@ export class Parser<+T> {
     });
   }
 
-  static digit: Parser<string> = new Parser((input): string | Error => {
-    if (input.first >= "0" && input.first <= "9") {
-      input.startIndex++;
-      return input.first;
-    }
-    return new Error(`Expected digit, got ${input.first}`);
-  });
+  static get digit(): Parser<string> {
+    return new Parser((input): string | Error => {
+      if (input.first >= "0" && input.first <= "9") {
+        input.startIndex++;
+        return input.first;
+      }
+      return new Error(`Expected digit, got ${input.first}`);
+    });
+  }
 
-  static letter: Parser<string> = new Parser((input): string | Error => {
-    if (
-      (input.first >= "a" && input.first <= "z") ||
-      (input.first >= "A" && input.first <= "Z")
-    ) {
-      input.startIndex++;
-      return input.first;
-    }
-    return new Error(`Expected letter, got ${input.first}`);
-  });
+  static get letter(): Parser<string> {
+    return new Parser((input): string | Error => {
+      if (
+        (input.first >= "a" && input.first <= "z") ||
+        (input.first >= "A" && input.first <= "Z")
+      ) {
+        input.startIndex++;
+        return input.first;
+      }
+      return new Error(`Expected letter, got ${input.first}`);
+    });
+  }
 
-  static natural: Parser<number> = Parser.sequence<
-    [string, $ReadOnlyArray<string>]
-  >(
-    Parser.digit.where((digit) => digit !== "0"),
-    Parser.zeroOrMore(Parser.digit)
-  ).map(([first, rest]) => parseInt(first + rest.join(""), 10));
+  static get natural(): Parser<number> {
+    return Parser.sequence(
+      Parser.digit.where((digit) => digit !== "0"),
+      Parser.zeroOrMore(Parser.digit)
+    ).map(([first, rest]) => parseInt(first + rest.join(""), 10));
+  }
 
-  static whole: Parser<number> = Parser.oneOf(
-    Parser.string("0").map(() => 0),
-    Parser.natural
-  );
+  static get whole(): Parser<number> {
+    return Parser.oneOf(
+      Parser.string("0").map(() => 0),
+      Parser.natural
+    );
+  }
 
-  static integer: Parser<number> = Parser.sequence<[-1 | 1, number]>(
-    Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
-    Parser.whole.map((int) => int || 0)
-  ).map(([sign, int]) => sign * int);
+  static get integer(): Parser<number> {
+    return Parser.sequence(
+      Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
+      Parser.whole.map((int) => int || 0)
+    ).map(([sign, int]) => sign * int);
+  }
 
-  static float: Parser<number> = Parser.sequence<
-    [-1 | 1, number, ".", $ReadOnlyArray<string>]
-  >(
-    Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
-    Parser.natural.optional.map((int) => int || 0),
-    Parser.string("."),
-    Parser.oneOrMore(Parser.digit)
-  ).map(
-    ([sign, int, _, digits]) => sign * parseFloat(int + "." + digits.join(""))
-  );
+  static get float(): Parser<number> {
+    return Parser.sequence(
+      Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
+      Parser.natural.optional.map((int) => int || 0),
+      Parser.string("."),
+      Parser.oneOrMore(Parser.digit)
+    ).map(
+      ([sign, int, _, digits]) => sign * parseFloat(int + "." + digits.join(""))
+    );
+  }
 
-  static space: Parser<void> = Parser.oneOrMore(Parser.string(" ")).map(
-    () => undefined
-  );
+  static get space(): Parser<void> {
+    return Parser.oneOrMore(Parser.string(" ")).map(() => undefined);
+  }
 
-  static whitespace: Parser<void> = Parser.oneOrMore(
-    Parser.oneOf(
-      // Spaces
-      Parser.string(" "),
-      // Newlines
-      Parser.string("\n"),
-      // Carriage returns
-      Parser.string("\r\n")
-    )
-  ).map(() => undefined);
+  static get whitespace(): Parser<void> {
+    return Parser.oneOrMore(
+      Parser.oneOf(
+        // Spaces
+        Parser.string(" "),
+        // Newlines
+        Parser.string("\n"),
+        // Carriage returns
+        Parser.string("\r\n")
+      )
+    ).map(() => undefined);
+  }
 }
 
 class ZeroOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
@@ -328,10 +343,12 @@ class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
   }
 }
 
-class ParserSequence<+T: $ReadOnlyArray<mixed>> extends Parser<T> {
-  +parsers: $TupleMap<T, <X>(X) => Parser<X>>;
+class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
+  $TupleMap<T, <O>(Parser<O>) => O>
+> {
+  +parsers: T;
 
-  constructor(...parsers: $TupleMap<T, <X>(X) => Parser<X>>) {
+  constructor(...parsers: T) {
     super((input): T | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
@@ -370,10 +387,12 @@ class ParserSequence<+T: $ReadOnlyArray<mixed>> extends Parser<T> {
 }
 
 // Similar to ParserSequence, but the parsers can occur in any order.
-class ParserSet<+T: $ReadOnlyArray<mixed>> extends Parser<T> {
-  +parsers: $TupleMap<T, <X>(X) => Parser<X>>;
+class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
+  $TupleMap<T, <O>(Parser<O>) => O>
+> {
+  +parsers: T;
 
-  constructor(...parsers: $TupleMap<T, <X>(X) => Parser<X>>) {
+  constructor(...parsers: T) {
     super((input): T | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;

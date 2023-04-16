@@ -1,4 +1,5 @@
 [ignore]
+.*/malformed_package_json/.*
 
 [include]
 ./src/core.ts
@@ -8,5 +9,10 @@
 [lints]
 
 [options]
+emoji=true
+exact_by_default=true
+experimental.const_params=true
+module.use_strict=true
+munge_underscores=true
 
 [strict]
