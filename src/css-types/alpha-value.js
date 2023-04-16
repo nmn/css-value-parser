@@ -8,6 +8,6 @@ export const alphaNumber: Parser<number> = Parser.float.where(
 );
 
 export const alphaValue: Parser<number> = Parser.oneOf(
-  alphaNumber,
-  Percentage.parse.map((v) => v.value / 100)
+  Percentage.parse.map((v) => v.value / 100),
+  alphaNumber
 );

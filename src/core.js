@@ -246,13 +246,17 @@ export class Parser<+T> {
   }
 
   static get float(): Parser<number> {
-    return Parser.sequence(
-      Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
-      Parser.whole.optional.map((int) => int || 0),
-      Parser.string("."),
-      Parser.oneOrMore(Parser.digit)
-    ).map(
-      ([sign, int, _, digits]) => sign * parseFloat(int + "." + digits.join(""))
+    return Parser.oneOf(
+      Parser.sequence(
+        Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
+        Parser.whole.optional.map((int) => int || 0),
+        Parser.string("."),
+        Parser.oneOrMore(Parser.digit)
+      ).map(
+        ([sign, int, _, digits]) =>
+          sign * parseFloat(int + "." + digits.join(""))
+      ),
+      Parser.integer
     );
   }
 
