@@ -30,4 +30,8 @@ export class SubString {
   get(relativeIndex: number): string {
     return this.string[this.startIndex + relativeIndex];
   }
+
+  toString(): string {
+    return this.string.slice(this.startIndex, this.endIndex + 1);
+  }
 }

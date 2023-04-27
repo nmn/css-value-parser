@@ -25,6 +25,12 @@ describe("Test CSS Type: <alpha-value>", () => {
     test("1", () => {
       expect(alphaValue.parse("1")).toEqual(1);
     });
+    test("parses decimal alpha values", () => {
+      expect(alphaValue.parse("0")).toEqual(0);
+      expect(alphaValue.parse("0.25")).toEqual(0.25);
+      expect(alphaValue.parse("0.5")).toEqual(0.5);
+      expect(alphaValue.parse("1")).toEqual(1);
+    });
   });
   describe("Percentages", () => {
     test("50%", () => {
@@ -44,6 +50,12 @@ describe("Test CSS Type: <alpha-value>", () => {
     });
     test(".25%", () => {
       expect(alphaValue.parse(".25%")).toEqual(0.0025);
+    });
+    test("parses percentage alpha values", () => {
+      expect(alphaValue.parse("0%")).toEqual(0);
+      expect(alphaValue.parse("25%")).toEqual(0.25);
+      expect(alphaValue.parse("50%")).toEqual(0.5);
+      expect(alphaValue.parse("100%")).toEqual(1);
     });
   });
 });
