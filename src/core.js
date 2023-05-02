@@ -314,7 +314,7 @@ class ZeroOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
 
 class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
   +parser: Parser<T>;
-  separator: ?Parser<void>;
+  separator: ?Parser<mixed>;
 
   constructor(parser: Parser<T>) {
     super((input): $ReadOnlyArray<T> | Error => {
@@ -342,7 +342,7 @@ class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
     this.parser = parser;
   }
 
-  separatedBy(separator: Parser<void>): OneOrMoreParsers<T> {
+  separatedBy(separator: Parser<mixed>): OneOrMoreParsers<T> {
     this.separator = separator;
     return this;
   }
