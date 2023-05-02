@@ -218,8 +218,9 @@ export class Parser<+T> {
         (input.first >= "a" && input.first <= "z") ||
         (input.first >= "A" && input.first <= "Z")
       ) {
+        const returnValue = input.first;
         input.startIndex++;
-        return input.first;
+        return returnValue;
       }
       return new Error(`Expected letter, got ${input.first}`);
     });
