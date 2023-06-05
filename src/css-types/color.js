@@ -1,5 +1,7 @@
 // @flow strict
 
+import type { ParserSequence } from "../core";
+
 import { Parser } from "../core";
 import { alphaValue } from "./alpha-value";
 import { Angle, Deg } from "./angle";

@@ -44,7 +44,6 @@ export class Percentage {
     return `${this.value}%`;
   }
   static parse: Parser<Percentage> = Parser.float
-    .where((v) => v >= 0 && v <= 100)
     .skip(Parser.string("%"))
     .map((v) => new Percentage(v));
 }

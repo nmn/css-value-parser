@@ -348,26 +348,28 @@ class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
   }
 }
 
-class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
+export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
   $TupleMap<T, <O>(Parser<O>) => O>
 > {
   +parsers: T;
 
   constructor(...parsers: T) {
-    super((input): T | Error => {
+    super((input): $TupleMap<T, <O>(Parser<O>) => O> | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
 
-      const output: $FlowFixMe = parsers.map((parser) => {
-        if (failed) {
-          return Error("already failed");
+      const output: $TupleMap<T, <O>(Parser<O>) => O | Error> = parsers.map(
+        <X>(parser: Parser<X>): X | Error => {
+          if (failed) {
+            return Error("already failed");
+          }
+          const result = parser.run(input);
+          if (result instanceof Error) {
+            failed = result;
+          }
+          return result;
         }
-        const result = parser.run(input);
-        if (result instanceof Error) {
-          failed = result;
-        }
-        return result;
-      });
+      );
 
       if (failed) {
         input.startIndex = startIndex;
@@ -375,8 +377,9 @@ class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
         return failed;
       }
 
-      return (output: T | Error);
+      return output;
     });
+
     this.parsers = parsers;
   }
 
@@ -398,11 +401,11 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
   +parsers: T;
 
   constructor(...parsers: T) {
-    super((input): T | Error => {
+    super((input): $TupleMap<T, <O>(Parser<O>) => O> | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
 
-      const output: $FlowFixMe = [];
+      const output = [];
       const indices: Set<number> = new Set();
 
       for (let i = 0; i < parsers.length; i++) {
@@ -440,7 +443,7 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
         return failed;
       }
 
-      return (output: T | Error);
+      return (output: $TupleMap<T, <O>(Parser<O>) => O> | Error);
     });
     this.parsers = parsers;
   }
