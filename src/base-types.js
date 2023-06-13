@@ -34,4 +34,8 @@ export class SubString {
   toString(): string {
     return this.string.slice(this.startIndex, this.endIndex + 1);
   }
+
+  get isEmpty(): boolean {
+    return this.startIndex > this.endIndex;
+  }
 }

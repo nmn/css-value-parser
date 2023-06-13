@@ -13,6 +13,22 @@ export class Parser<+T> {
     return this.run(new SubString(input));
   }
 
+  parseToEnd(input: string): T {
+    let subStr = new SubString(input);
+    const output = this.run(subStr);
+    if (output instanceof Error) {
+      throw output;
+    }
+    if (!subStr.isEmpty) {
+      throw new Error(
+        `Expected end of input, got ${subStr.string.slice(
+          subStr.startIndex
+        )} instead`
+      );
+    }
+    return output;
+  }
+
   map<NewT>(f: (T) => NewT): Parser<NewT> {
     return new Parser((input): NewT | Error => {
       const oldOutput = this.run(input);
