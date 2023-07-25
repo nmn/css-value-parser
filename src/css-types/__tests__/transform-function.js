@@ -20,8 +20,6 @@ import {
   TranslateZ,
 } from "../transform-function.js";
 
-import { SubString } from "../../base-types";
-
 import { anglePercentage } from "../angle-percentage";
 import { Length, Px, Em } from "../length.js";
 import { Angle, Deg, Grad, Rad, Turn } from "../angle";
