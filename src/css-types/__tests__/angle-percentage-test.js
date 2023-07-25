@@ -8,19 +8,19 @@ import { anglePercentage } from "../angle-percentage";
 
 describe("Test CSS Type: <angle-percentage>", () => {
   test("parses CSS angle or percentage types strings correctly", () => {
-    expect(anglePercentage.parse("0deg")).toEqual(new Deg(0));
-    expect(anglePercentage.parse("50%")).toEqual(new Percentage(50));
-    expect(anglePercentage.parse("45deg")).toEqual(new Deg(45));
-    expect(anglePercentage.parse("90deg")).toEqual(new Deg(90));
-    expect(anglePercentage.parse("180deg")).toEqual(new Deg(180));
-    expect(anglePercentage.parse("270deg")).toEqual(new Deg(270));
-    expect(anglePercentage.parse("-90deg")).toEqual(new Deg(-90));
-    expect(anglePercentage.parse("0.5turn")).toEqual(new Turn(0.5));
-    expect(anglePercentage.parse("2rad")).toEqual(new Rad(2));
-    expect(anglePercentage.parse("100grad")).toEqual(new Grad(100));
-    expect(anglePercentage.parse("1.5deg")).toEqual(new Deg(1.5));
-    expect(anglePercentage.parse("0.75")).toBeInstanceOf(Error);
-    expect(anglePercentage.parse("50% 50%")).toEqual(new Percentage(50));
+    expect(anglePercentage.parseToEnd("0deg")).toEqual(new Deg(0));
+    expect(anglePercentage.parseToEnd("50%")).toEqual(new Percentage(50));
+    expect(anglePercentage.parseToEnd("45deg")).toEqual(new Deg(45));
+    expect(anglePercentage.parseToEnd("90deg")).toEqual(new Deg(90));
+    expect(anglePercentage.parseToEnd("180deg")).toEqual(new Deg(180));
+    expect(anglePercentage.parseToEnd("270deg")).toEqual(new Deg(270));
+    expect(anglePercentage.parseToEnd("-90deg")).toEqual(new Deg(-90));
+    expect(anglePercentage.parseToEnd("0.5turn")).toEqual(new Turn(0.5));
+    expect(anglePercentage.parseToEnd("2rad")).toEqual(new Rad(2));
+    expect(anglePercentage.parseToEnd("100grad")).toEqual(new Grad(100));
+    expect(anglePercentage.parseToEnd("1.5deg")).toEqual(new Deg(1.5));
+    expect(() => anglePercentage.parseToEnd("0.75")).toThrow();
+    expect(() => anglePercentage.parseToEnd("50% 50%")).toThrow();
   });
 
   test("parses CSS angle or percentage types subStrings correctly", () => {

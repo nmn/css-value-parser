@@ -47,3 +47,8 @@ export class Percentage {
     .skip(Parser.string("%"))
     .map((v) => new Percentage(v));
 }
+
+export const numberOrPercentage: Parser<number | Percentage> = Parser.oneOf(
+  Percentage.parse,
+  Parser.float
+);

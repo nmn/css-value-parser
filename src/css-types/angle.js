@@ -4,7 +4,7 @@ import { Parser } from "../core.js";
 
 export class Angle {
   +value: number;
-  +unit: string;
+  +unit: string = "";
   constructor(value: number) {
     this.value = value;
   }
@@ -12,7 +12,13 @@ export class Angle {
     return `${this.value}${this.unit}`;
   }
   static get parse(): Parser<Angle> {
-    return Parser.oneOf(Deg.parse, Grad.parse, Rad.parse, Turn.parse);
+    return Parser.oneOf(
+      Deg.parse,
+      Grad.parse,
+      Rad.parse,
+      Turn.parse,
+      Parser.string("0").map(() => new Angle(0))
+    );
   }
 }
 
