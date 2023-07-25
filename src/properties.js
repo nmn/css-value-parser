@@ -16,3 +16,10 @@ export const appearance: Parser<
   Parser.string('menulist-button'),
   Parser.string('textfield'),
 );
+
+export { Transform } from './properties/transform';
+export { BoxShadow, BoxShadowList } from './properties/box-shadow';
+export {
+  BorderRadius,
+  BorderRadiusShorthand,
+} from './properties/border-radius';

@@ -1,5 +1,8 @@
 {
   "name": "typed-css-parser",
+  "version": "1.0.0",
+  "description": "A detailed parser for the values of CSS properties",
+  "main": "lib/properties.js",
   "scripts": {
     "build": "babel src --out-dir lib",
     "test": "jest",
