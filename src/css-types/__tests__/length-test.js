@@ -1,31 +1,6 @@
 // @flow strict
 
-import {
-  Length,
-  Cap,
-  Ch,
-  Em,
-  Ex,
-  Ic,
-  Lh,
-  Rem,
-  Rlh,
-  Vh,
-  // Sv,
-  // Lv,
-  // Dv,
-  Cqw,
-  Cqi,
-  Cqh,
-  Cqb,
-  Cqmin,
-  Cqmax,
-  Px,
-  Cm,
-  Mm,
-  In,
-  Pt,
-} from '../length';
+import { Length, Em, Rem, Px, In, Pt } from '../length';
 import { SubString } from '../../base-types';
 
 describe('Test CSS Type: <length>', () => {

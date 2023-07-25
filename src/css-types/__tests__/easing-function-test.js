@@ -1,6 +1,5 @@
 // @flow strict
 
-import { Parser } from '../../core';
 import {
   EasingFunction,
   LinearEasingFunction,

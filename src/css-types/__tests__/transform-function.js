@@ -17,10 +17,8 @@ import {
   Translate3d,
   TranslateX,
   TranslateY,
-  TranslateZ,
 } from '../transform-function.js';
 
-import { anglePercentage } from '../angle-percentage';
 import { Length, Px, Em } from '../length.js';
 import { Angle, Deg, Grad, Rad, Turn } from '../angle';
 import { Percentage } from '../common-types';
@@ -81,7 +79,7 @@ describe('Test CSS Type: <transform-function>', () => {
       );
       expect(
         TransformFunction.parse.parseToEnd(
-          `matrix3d(-0.6,1.34788,0,0,-2.34788,-.6,0, 0,0,0,1,0,0,0,10,1)`,
+          'matrix3d(-0.6,1.34788,0,0,-2.34788,-.6,0, 0,0,0,1,0,0,0,10,1)',
         ),
       ).toEqual(
         new Matrix3d([

@@ -14,7 +14,7 @@ export class Parser<+T> {
   }
 
   parseToEnd(input: string): T {
-    let subStr = new SubString(input);
+    const subStr = new SubString(input);
     const output = this.run(subStr);
     if (output instanceof Error) {
       throw output;
@@ -106,7 +106,7 @@ export class Parser<+T> {
   // T will be a union of the output types of the parsers
   static oneOf<T>(...parsers: $ReadOnlyArray<Parser<T>>): Parser<T> {
     return new Parser((input): T | Error => {
-      let errors = [];
+      const errors = [];
       for (const parser of parsers) {
         const output = parser.run(input);
         if (!(output instanceof Error)) {
@@ -316,6 +316,7 @@ class ZeroOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
         }
         output.push(result);
       }
+      // eslint-disable-next-line no-unreachable
       return output;
     });
     const getThis = () => this;
@@ -352,6 +353,7 @@ class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
         }
         output.push(result);
       }
+      // eslint-disable-next-line no-unreachable
       return output;
     });
     const getThis = () => this;
@@ -426,10 +428,10 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
 
       for (let i = 0; i < parsers.length; i++) {
         let found = false;
-        let errors = [];
+        const errors = [];
         for (let j = 0; j < parsers.length && !indices.has(j); j++) {
           const parser = parsers[j];
-          let result = parser.run(input);
+          const result = parser.run(input);
           if (result instanceof Error) {
             errors.push(result);
           } else {
@@ -472,3 +474,6 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
     );
   }
 }
+
+type ParserToParsed = <T>(Parser<T>) => T;
+export type FromParser<P: Parser<mixed>> = $Call<ParserToParsed, P>;

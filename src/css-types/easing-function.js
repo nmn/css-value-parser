@@ -32,7 +32,7 @@ export class LinearEasingFunction extends EasingFunction {
         )
         .surroundedBy(Parser.whitespace.optional),
       Parser.string(')'),
-    ).map(([linear, points, end]) => new LinearEasingFunction(points));
+    ).map(([_linear, points, _end]) => new LinearEasingFunction(points));
   }
 }
 
@@ -56,7 +56,7 @@ export class CubicBezierEasingFunction extends EasingFunction {
         .where((points) => points.length === 4),
       Parser.string(')'),
     ).map(
-      ([linear, [x1, y1, x2, y2], end]) =>
+      ([_linear, [x1, y1, x2, y2], _end]) =>
         new CubicBezierEasingFunction([x1, y1, x2, y2]),
     );
   }

@@ -1,7 +1,5 @@
 // @flow strict
 
-import type { Percentage } from './common-types';
-import type { Length } from './length';
 import type { LengthPercentage } from './length-percentage';
 import { Position } from './position';
 

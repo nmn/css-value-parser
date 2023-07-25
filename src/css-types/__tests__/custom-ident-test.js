@@ -2,7 +2,6 @@
 
 import { CustomIdentifier } from '../custom-ident';
 import { SubString } from '../../base-types';
-import { Parser } from '../../core';
 
 describe('Test CSS Type: <custom-ident>', () => {
   test('parses CSS custom-ident types strings correctly', () => {

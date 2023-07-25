@@ -8,6 +8,7 @@ import { anglePercentage } from '../angle-percentage';
 
 describe('Test CSS Type: <angle-percentage>', () => {
   test('parses CSS angle or percentage types strings correctly', () => {
+    expect(anglePercentage.parseToEnd('0')).toEqual(new Angle(0));
     expect(anglePercentage.parseToEnd('0deg')).toEqual(new Deg(0));
     expect(anglePercentage.parseToEnd('50%')).toEqual(new Percentage(50));
     expect(anglePercentage.parseToEnd('45deg')).toEqual(new Deg(45));

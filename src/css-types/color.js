@@ -1,7 +1,5 @@
 // @flow strict
 
-import type { ParserSequence } from '../core';
-
 import { Parser } from '../core';
 import { alphaValue } from './alpha-value';
 import { Angle, Deg } from './angle';
@@ -252,8 +250,7 @@ export class Rgb extends Color {
   +r: number;
   +g: number;
   +b: number;
-  +a: number = 1;
-  constructor(r: number, g: number, b: number, a: number = 1) {
+  constructor(r: number, g: number, b: number) {
     super();
     this.r = r;
     this.g = g;
@@ -324,8 +321,7 @@ export class Hsl extends Color {
   +h: Angle;
   +s: Percentage;
   +l: Percentage;
-  +a: number = 1;
-  constructor(h: Angle, s: Percentage, l: Percentage, a: number = 1) {
+  constructor(h: Angle, s: Percentage, l: Percentage) {
     super();
     this.h = h;
     this.s = s;

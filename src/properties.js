@@ -1,14 +1,18 @@
 // @flow strict
 
-import { Parser } from './core';
+import { Parser, type FromParser } from './core';
 import { cssWideKeywords } from './css-types/common-types';
 
-const appearance = Parser.oneOf(
+export const appearance: Parser<
+  | FromParser<typeof cssWideKeywords>
+  | 'none'
+  | 'auto'
+  | 'menulist-button'
+  | 'textfield',
+> = Parser.oneOf(
   cssWideKeywords,
   Parser.string('none'),
   Parser.string('auto'),
   Parser.string('menulist-button'),
   Parser.string('textfield'),
 );
-
-// const accentColor = color

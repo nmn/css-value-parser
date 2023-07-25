@@ -1,8 +1,6 @@
 // @flow strict
 
 import { DashedIdentifier } from '../dashed-ident';
-import { SubString } from '../../base-types';
-import { Parser } from '../../core';
 
 describe('Test CSS Type: <dashed-ident>', () => {
   test('parses CSS dashed-ident types strings correctly', () => {

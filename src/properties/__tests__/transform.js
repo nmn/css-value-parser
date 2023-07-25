@@ -1,7 +1,6 @@
 // @flow strict
 
 import {
-  TransformFunction,
   Matrix,
   Matrix3d,
   Perspective,
@@ -10,20 +9,12 @@ import {
   RotateAxis,
   Scale,
   Scale3d,
-  ScaleAxis,
   Skew,
-  SkewAxis,
   Translate,
-  Translate3d,
-  TranslateX,
-  TranslateY,
-  TranslateZ,
 } from '../../css-types/transform-function.js';
 
-import { anglePercentage } from '../../css-types/angle-percentage';
-import { Length, Px, Em } from '../../css-types/length.js';
-import { Angle, Deg, Grad, Rad, Turn } from '../../css-types/angle';
-import { Percentage } from '../../css-types/common-types';
+import { Px } from '../../css-types/length.js';
+import { Deg } from '../../css-types/angle';
 import { Transform } from '../transform';
 
 describe('Test CSS property: `transform`', () => {

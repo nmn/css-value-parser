@@ -2,15 +2,17 @@
 
 import { Parser } from '../core';
 
-export const inherit: Parser<string> = Parser.string('inherit');
-export const initial: Parser<string> = Parser.string('initial');
-export const unset: Parser<string> = Parser.string('unset');
-export const revert: Parser<string> = Parser.string('revert');
+export const inherit: Parser<'inherit'> = Parser.string('inherit');
+export const initial: Parser<'initial'> = Parser.string('initial');
+export const unset: Parser<'unset'> = Parser.string('unset');
+export const revert: Parser<'revert'> = Parser.string('revert');
 // Purposely not exported
 // StyleX will not support this value
 // export const revertLayer: Parser<string> = Parser.string("revert-layer");
 
-export const cssWideKeywords: Parser<string> = Parser.oneOf(
+export const cssWideKeywords: Parser<
+  'inherit' | 'initial' | 'unset' | 'revert',
+> = Parser.oneOf(
   inherit,
   initial,
   unset,
