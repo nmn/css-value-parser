@@ -1,8 +1,8 @@
 // @flow strict
 
-import { Parser } from "../core";
-import { Length, Px } from "../css-types/length";
-import { Color } from "../css-types/color";
+import { Parser } from '../core';
+import { Length, Px } from '../css-types/length';
+import { Color } from '../css-types/color';
 
 export class BoxShadow {
   +offsetX: Length;
@@ -18,7 +18,7 @@ export class BoxShadow {
     blurRadius: Length,
     spreadRadius: Length,
     color: Color,
-    inset: boolean = false
+    inset: boolean = false,
   ) {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
@@ -34,7 +34,7 @@ export class BoxShadow {
       Length.parse,
       Length.parse.optional,
       Length.parse.optional,
-      Color.parse
+      Color.parse,
     )
       .separatedBy(Parser.whitespace)
       .map(
@@ -44,11 +44,11 @@ export class BoxShadow {
             offsetY,
             blurRadius ?? new Px(0),
             spreadRadius ?? new Px(0),
-            color
-          )
+            color,
+          ),
       );
 
-    const insetShadow = Parser.setOf(outerShadow, Parser.string("inset"))
+    const insetShadow = Parser.setOf(outerShadow, Parser.string('inset'))
       .separatedBy(Parser.whitespace)
       .map(
         ([shadow, _inset]) =>
@@ -58,8 +58,8 @@ export class BoxShadow {
             shadow.blurRadius,
             shadow.spreadRadius,
             shadow.color,
-            true
-          )
+            true,
+          ),
       );
 
     return Parser.oneOf(outerShadow, insetShadow);
@@ -75,7 +75,7 @@ export class BoxShadowList {
 
   static get parse(): Parser<BoxShadowList> {
     return Parser.oneOrMore(BoxShadow.parse)
-      .separatedBy(Parser.string(",").surroundedBy(Parser.whitespace.optional))
+      .separatedBy(Parser.string(',').surroundedBy(Parser.whitespace.optional))
       .map((shadows) => new BoxShadowList(shadows));
   }
 }

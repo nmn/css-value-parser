@@ -1,6 +1,6 @@
 // @flow strict
 
-import { Parser } from "../core";
+import { Parser } from '../core';
 
 export class EasingFunction {
   static get parse(): Parser<EasingFunction> {
@@ -9,7 +9,7 @@ export class EasingFunction {
       CubicBezierEasingFunction.parse,
       CubicBezierKeyword.parse,
       StepsEasingFunction.parse,
-      StepsKeyword.parse
+      StepsKeyword.parse,
     );
   }
 }
@@ -21,17 +21,17 @@ export class LinearEasingFunction extends EasingFunction {
     this.points = points;
   }
   toString(): string {
-    return `linear(${this.points.join(", ")})`;
+    return `linear(${this.points.join(', ')})`;
   }
   static get parse(): Parser<LinearEasingFunction> {
     return Parser.sequence(
-      Parser.string("linear("),
+      Parser.string('linear('),
       Parser.oneOrMore(Parser.float)
         .separatedBy(
-          Parser.string(",").surroundedBy(Parser.whitespace.optional)
+          Parser.string(',').surroundedBy(Parser.whitespace.optional),
         )
         .surroundedBy(Parser.whitespace.optional),
-      Parser.string(")")
+      Parser.string(')'),
     ).map(([linear, points, end]) => new LinearEasingFunction(points));
   }
 }
@@ -43,26 +43,26 @@ export class CubicBezierEasingFunction extends EasingFunction {
     this.points = points;
   }
   toString(): string {
-    return `cubic-bezier(${this.points.join(", ")})`;
+    return `cubic-bezier(${this.points.join(', ')})`;
   }
   static get parse(): Parser<CubicBezierEasingFunction> {
     return Parser.sequence(
-      Parser.string("cubic-bezier("),
+      Parser.string('cubic-bezier('),
       Parser.oneOrMore(Parser.float)
         .separatedBy(
-          Parser.string(",").surroundedBy(Parser.whitespace.optional)
+          Parser.string(',').surroundedBy(Parser.whitespace.optional),
         )
         .surroundedBy(Parser.whitespace.optional)
         .where((points) => points.length === 4),
-      Parser.string(")")
+      Parser.string(')'),
     ).map(
       ([linear, [x1, y1, x2, y2], end]) =>
-        new CubicBezierEasingFunction([x1, y1, x2, y2])
+        new CubicBezierEasingFunction([x1, y1, x2, y2]),
     );
   }
 }
 
-type TCubicBezierKeyword = "ease" | "ease-in" | "ease-out" | "ease-in-out";
+type TCubicBezierKeyword = 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
 export class CubicBezierKeyword extends EasingFunction {
   +keyword: TCubicBezierKeyword;
   constructor(keyword: TCubicBezierKeyword) {
@@ -74,18 +74,18 @@ export class CubicBezierKeyword extends EasingFunction {
   }
   static get parse(): Parser<CubicBezierKeyword> {
     return Parser.oneOf<TCubicBezierKeyword>(
-      Parser.string("ease-in-out"),
-      Parser.string("ease-in"),
-      Parser.string("ease-out"),
-      Parser.string("ease")
+      Parser.string('ease-in-out'),
+      Parser.string('ease-in'),
+      Parser.string('ease-out'),
+      Parser.string('ease'),
     ).map((keyword) => new CubicBezierKeyword(keyword));
   }
 }
 
 export class StepsEasingFunction extends EasingFunction {
   +steps: number;
-  +start: "start" | "end";
-  constructor(steps: number, start: "start" | "end") {
+  +start: 'start' | 'end';
+  constructor(steps: number, start: 'start' | 'end') {
     super();
     this.steps = steps;
     this.start = start;
@@ -95,23 +95,23 @@ export class StepsEasingFunction extends EasingFunction {
   }
   static get parse(): Parser<StepsEasingFunction> {
     return Parser.sequence(
-      Parser.string("steps("),
+      Parser.string('steps('),
       Parser.sequence(
         Parser.natural,
-        Parser.oneOf(Parser.string("start"), Parser.string("end"))
+        Parser.oneOf(Parser.string('start'), Parser.string('end')),
       )
         .separatedBy(
-          Parser.string(",").surroundedBy(Parser.whitespace.optional)
+          Parser.string(',').surroundedBy(Parser.whitespace.optional),
         )
         .surroundedBy(Parser.whitespace.optional),
-      Parser.string(")")
+      Parser.string(')'),
     ).map(([_, [steps, start], _2]) => new StepsEasingFunction(steps, start));
   }
 }
 
 export class StepsKeyword extends EasingFunction {
-  +keyword: "step-start" | "step-end";
-  constructor(keyword: "step-start" | "step-end") {
+  +keyword: 'step-start' | 'step-end';
+  constructor(keyword: 'step-start' | 'step-end') {
     super();
     this.keyword = keyword;
   }
@@ -120,8 +120,8 @@ export class StepsKeyword extends EasingFunction {
   }
   static get parse(): Parser<StepsKeyword> {
     return Parser.oneOf(
-      Parser.string("step-start"),
-      Parser.string("step-end")
+      Parser.string('step-start'),
+      Parser.string('step-end'),
     ).map((keyword) => new StepsKeyword(keyword));
   }
 }

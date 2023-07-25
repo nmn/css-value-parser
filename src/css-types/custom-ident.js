@@ -1,6 +1,6 @@
 // @flow strict
 
-import { Parser } from "../core";
+import { Parser } from '../core';
 
 export class CustomIdentifier {
   +value: string;
@@ -12,39 +12,39 @@ export class CustomIdentifier {
   }
   static get parse(): Parser<CustomIdentifier> {
     const escape: Parser<string> = Parser.oneOf(
-      Parser.string("\\\\"), // Backslash
+      Parser.string('\\\\'), // Backslash
       Parser.string('\\"'), // Double quote
       Parser.string("\\'"), // Single quote
-      Parser.string("\\."), // dot
-      Parser.string("\\#"), // hash
-      Parser.string("\\:"), // colon
-      Parser.string("\\;"), // semi-colon
-      Parser.string("\\ "), // space
-      Parser.string("\\+"), // plus
+      Parser.string('\\.'), // dot
+      Parser.string('\\#'), // hash
+      Parser.string('\\:'), // colon
+      Parser.string('\\;'), // semi-colon
+      Parser.string('\\ '), // space
+      Parser.string('\\+'), // plus
       // Unicode character. Backslash followed by 1-6 hex digits
       Parser.sequence(
-        Parser.string("\\"),
-        Parser.regex(/[\da-fA-F]{1,6} /)
-      ).map((arr) => arr.join(""))
+        Parser.string('\\'),
+        Parser.regex(/[\da-fA-F]{1,6} /),
+      ).map((arr) => arr.join('')),
     );
 
     const nameStart: Parser<string> = Parser.oneOf(
       Parser.letter,
-      Parser.string("_"),
-      Parser.sequence(Parser.string("-"), Parser.letter).map((arr) =>
-        arr.join("")
+      Parser.string('_'),
+      Parser.sequence(Parser.string('-'), Parser.letter).map((arr) =>
+        arr.join(''),
       ),
-      escape
+      escape,
     );
     const restOfTheName: Parser<string> = Parser.oneOf(
       nameStart,
       Parser.digit,
-      Parser.string("-"),
-      escape
+      Parser.string('-'),
+      escape,
     );
     return Parser.sequence(
       nameStart,
-      Parser.zeroOrMore(restOfTheName).map((arr) => arr.join(""))
+      Parser.zeroOrMore(restOfTheName).map((arr) => arr.join('')),
     ).map(([start, rest]) => new CustomIdentifier(start + rest));
   }
 }

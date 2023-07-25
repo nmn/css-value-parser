@@ -1,6 +1,6 @@
 // @flow strict
 
-import { Parser } from "../core";
+import { Parser } from '../core';
 
 // e.g. 1fr
 export class Flex {
@@ -14,7 +14,7 @@ export class Flex {
   static get parse(): Parser<Flex> {
     return Parser.sequence(
       Parser.float.where((num) => num >= 0),
-      Parser.string("fr")
+      Parser.string('fr'),
     ).map(([fraction, _unit]) => new Flex(fraction));
   }
 }

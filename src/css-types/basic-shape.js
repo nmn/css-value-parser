@@ -1,17 +1,17 @@
 // @flow strict
 
-import type { Percentage } from "./common-types";
-import type { Length } from "./length";
-import type { LengthPercentage } from "./length-percentage";
-import { Position } from "./position";
+import type { Percentage } from './common-types';
+import type { Length } from './length';
+import type { LengthPercentage } from './length-percentage';
+import { Position } from './position';
 
-import { BorderRadiusShorthand } from "../properties/border-radius";
-import { Parser } from "../core";
-import { lengthPercentage } from "./length-percentage";
+import { BorderRadiusShorthand } from '../properties/border-radius';
+import { Parser } from '../core';
+import { lengthPercentage } from './length-percentage';
 
 class BasicShape {
   toString(): string {
-    throw new Error("Not implemented. Use a sub-class instead.");
+    throw new Error('Not implemented. Use a sub-class instead.');
   }
 }
 
@@ -26,7 +26,7 @@ export class Inset extends BasicShape {
     right: LengthPercentage,
     bottom: LengthPercentage,
     left: LengthPercentage,
-    round: ?BorderRadiusShorthand
+    round: ?BorderRadiusShorthand,
   ) {
     super();
     this.top = top;
@@ -39,7 +39,7 @@ export class Inset extends BasicShape {
   toString(): string {
     const { top, right, bottom, left, round } = this;
     const roundStr =
-      this.round != null ? ` round ${this.round.toString()}` : "";
+      this.round != null ? ` round ${this.round.toString()}` : '';
     if (
       top === right &&
       right === bottom &&
@@ -61,7 +61,7 @@ export class Inset extends BasicShape {
       LengthPercentage,
       LengthPercentage,
       LengthPercentage,
-      LengthPercentage
+      LengthPercentage,
     ];
     const insets: Parser<Insets> = Parser.oneOf(
       lengthPercentage.map((v) => [v, v, v, v]),
@@ -75,26 +75,26 @@ export class Inset extends BasicShape {
         lengthPercentage,
         lengthPercentage,
         lengthPercentage,
-        lengthPercentage
-      ).separatedBy(Parser.whitespace)
+        lengthPercentage,
+      ).separatedBy(Parser.whitespace),
     );
 
     const round: Parser<BorderRadiusShorthand> = Parser.sequence(
-      Parser.string("round"),
+      Parser.string('round'),
       Parser.whitespace,
-      BorderRadiusShorthand.parse
+      BorderRadiusShorthand.parse,
     ).map(([, , v]) => v);
 
     return Parser.sequence(
-      Parser.string("inset("),
+      Parser.string('inset('),
       insets.prefix(Parser.whitespace.optional),
       round.prefix(Parser.whitespace).optional,
-      Parser.string(")").prefix(Parser.whitespace.optional)
+      Parser.string(')').prefix(Parser.whitespace.optional),
     ).map(([_, [t, r, b, l], round]) => new Inset(t, r, b, l, round));
   }
 }
 
-export type TCircleRadius = LengthPercentage | "closest-side" | "farthest-side";
+export type TCircleRadius = LengthPercentage | 'closest-side' | 'farthest-side';
 export class Circle extends BasicShape {
   +radius: TCircleRadius;
   +position: ?Position;
@@ -105,28 +105,28 @@ export class Circle extends BasicShape {
   }
   toString(): string {
     const { radius, position } = this;
-    const positionStr = position != null ? ` at ${position.toString()}` : "";
+    const positionStr = position != null ? ` at ${position.toString()}` : '';
     return `circle(${radius.toString()}${positionStr})`;
   }
   static get parse(): Parser<Circle> {
     const radius: Parser<TCircleRadius> = Parser.oneOf(
       lengthPercentage,
-      Parser.string("closest-side"),
-      Parser.string("farthest-side")
+      Parser.string('closest-side'),
+      Parser.string('farthest-side'),
     );
 
     const position: Parser<Position> = Parser.sequence(
-      Parser.string("at"),
-      Position.parse
+      Parser.string('at'),
+      Position.parse,
     )
       .separatedBy(Parser.whitespace)
       .map(([, v]) => v);
 
     return Parser.sequence(
-      Parser.string("circle("),
+      Parser.string('circle('),
       radius.prefix(Parser.whitespace.optional),
       position.prefix(Parser.whitespace).optional,
-      Parser.string(")").prefix(Parser.whitespace.optional)
+      Parser.string(')').prefix(Parser.whitespace.optional),
     ).map(([_, radius, position]) => new Circle(radius, position));
   }
 }
@@ -138,7 +138,7 @@ export class Ellipse extends BasicShape {
   constructor(
     radiusX: TCircleRadius,
     radiusY: TCircleRadius,
-    position: ?Position
+    position: ?Position,
   ) {
     super();
     this.radiusX = radiusX;
@@ -147,44 +147,44 @@ export class Ellipse extends BasicShape {
   }
   toString(): string {
     const { radiusX, radiusY, position } = this;
-    const positionStr = position != null ? ` at ${position.toString()}` : "";
+    const positionStr = position != null ? ` at ${position.toString()}` : '';
     return `ellipse(${radiusX.toString()} ${radiusY.toString()}${positionStr})`;
   }
 
   static get parse(): Parser<Ellipse> {
     const radius: Parser<TCircleRadius> = Parser.oneOf(
       lengthPercentage,
-      Parser.string("closest-side"),
-      Parser.string("farthest-side")
+      Parser.string('closest-side'),
+      Parser.string('farthest-side'),
     );
 
     const position: Parser<Position> = Parser.sequence(
-      Parser.string("at"),
-      Position.parse
+      Parser.string('at'),
+      Position.parse,
     )
       .separatedBy(Parser.whitespace)
       .map(([_at, v]) => v);
 
     return Parser.sequence(
-      Parser.string("ellipse("),
+      Parser.string('ellipse('),
       radius.prefix(Parser.whitespace.optional),
       radius.prefix(Parser.whitespace),
       position.prefix(Parser.whitespace).optional,
-      Parser.string(")").prefix(Parser.whitespace.optional)
+      Parser.string(')').prefix(Parser.whitespace.optional),
     ).map(
       ([_, radiusX, radiusY, position]) =>
-        new Ellipse(radiusX, radiusY, position)
+        new Ellipse(radiusX, radiusY, position),
     );
   }
 }
 
-type FillRule = ?"nonzero" | "evenodd";
-const fillRule: Parser<"nonzero" | "evenodd"> = Parser.oneOf(
-  Parser.string("nonzero"),
-  Parser.string("evenodd")
+type FillRule = ?'nonzero' | 'evenodd';
+const fillRule: Parser<'nonzero' | 'evenodd'> = Parser.oneOf(
+  Parser.string('nonzero'),
+  Parser.string('evenodd'),
 )
   .surroundedBy(Parser.whitespace.optional)
-  .skip(Parser.string(","));
+  .skip(Parser.string(','));
 
 type Points = $ReadOnlyArray<[LengthPercentage, LengthPercentage]>;
 
@@ -197,21 +197,21 @@ export class Polygon extends BasicShape {
     this.fillRule = fillRule;
   }
   toString(): string {
-    const fillRule = this.fillRule != null ? `${this.fillRule}, ` : "";
+    const fillRule = this.fillRule != null ? `${this.fillRule}, ` : '';
     return `polygon(${fillRule}${this.points
       .map(([x, y]) => `${x.toString()} ${y.toString()}`)
-      .join(", ")})`;
+      .join(', ')})`;
   }
   static get parse(): Parser<Polygon> {
     return Parser.sequence(
-      Parser.string("polygon("),
+      Parser.string('polygon('),
       fillRule.optional,
       Parser.oneOrMore(
         Parser.sequence(lengthPercentage, lengthPercentage).separatedBy(
-          Parser.whitespace
-        )
+          Parser.whitespace,
+        ),
       ),
-      Parser.string(")").prefix(Parser.whitespace.optional)
+      Parser.string(')').prefix(Parser.whitespace.optional),
     ).map(([_, fillRule, points]) => new Polygon(points, fillRule));
   }
 }
@@ -225,15 +225,15 @@ export class Path extends BasicShape {
     this.fillRule = fillRule;
   }
   toString(): string {
-    const fillRule = this.fillRule != null ? `${this.fillRule}, ` : "";
+    const fillRule = this.fillRule != null ? `${this.fillRule}, ` : '';
     return `path(${fillRule}"${this.path}")`;
   }
   static get parse(): Parser<Path> {
     return Parser.sequence(
-      Parser.string("path("),
+      Parser.string('path('),
       fillRule.optional,
       Parser.quotedString,
-      Parser.string(")").prefix(Parser.whitespace.optional)
+      Parser.string(')').prefix(Parser.whitespace.optional),
     ).map(([_, fillRule, path]) => new Path(path, fillRule));
   }
 }

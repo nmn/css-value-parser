@@ -1,6 +1,6 @@
 // @flow strict
 
-import { SubString } from "./base-types.js";
+import { SubString } from './base-types.js';
 
 export class Parser<+T> {
   +run: (input: SubString) => T | Error;
@@ -22,8 +22,8 @@ export class Parser<+T> {
     if (!subStr.isEmpty) {
       throw new Error(
         `Expected end of input, got ${subStr.string.slice(
-          subStr.startIndex
-        )} instead`
+          subStr.startIndex,
+        )} instead`,
       );
     }
     return output;
@@ -69,7 +69,7 @@ export class Parser<+T> {
 
   surroundedBy(
     prefix: Parser<mixed>,
-    suffix: Parser<mixed> = prefix
+    suffix: Parser<mixed> = prefix,
   ): Parser<T> {
     return this.prefix(prefix).skip(suffix);
   }
@@ -87,7 +87,7 @@ export class Parser<+T> {
   }
 
   static never<T>(): Parser<T> {
-    return new Parser(() => new Error("Never"));
+    return new Parser(() => new Error('Never'));
   }
 
   static always<T>(output: T): Parser<T> {
@@ -115,8 +115,8 @@ export class Parser<+T> {
         errors.push(output);
       }
       return new Error(
-        "No parser matched\n" +
-          errors.map((err) => "- " + err.toString()).join("\n")
+        'No parser matched\n' +
+          errors.map((err) => '- ' + err.toString()).join('\n'),
       );
     });
   }
@@ -144,14 +144,14 @@ export class Parser<+T> {
     return new Parser((input): T | Error => {
       const { startIndex, endIndex } = input;
       if (startIndex + str.length - 1 > endIndex) {
-        return new Error("End of input");
+        return new Error('End of input');
       }
       if (input.startsWith(str)) {
         input.startIndex += str.length;
         return str;
       }
       return new Error(
-        `Expected ${str}, got ${input.string.slice(startIndex)}`
+        `Expected ${str}, got ${input.string.slice(startIndex)}`,
       );
     });
   }
@@ -163,23 +163,23 @@ export class Parser<+T> {
       Parser.zeroOrMore(
         Parser.oneOf(
           Parser.string('\\"').map(() => '"'),
-          Parser.string("\\\\").map(() => "\\"),
-          Parser.takeWhile((char) => char !== '"' && char !== "\\")
-        )
+          Parser.string('\\\\').map(() => '\\'),
+          Parser.takeWhile((char) => char !== '"' && char !== '\\'),
+        ),
       ),
-      Parser.string('"')
-    ).map(([, chars]) => chars.join(""));
+      Parser.string('"'),
+    ).map(([, chars]) => chars.join(''));
     const singleQuotes = Parser.sequence(
       Parser.string("'"),
       Parser.zeroOrMore(
         Parser.oneOf(
           Parser.string("\\'").map(() => "'"),
-          Parser.string("\\\\").map(() => "\\"),
-          Parser.takeWhile((char) => char !== "'" && char !== "\\")
-        )
+          Parser.string('\\\\').map(() => '\\'),
+          Parser.takeWhile((char) => char !== "'" && char !== '\\'),
+        ),
       ),
-      Parser.string("'")
-    ).map(([, chars]) => chars.join(""));
+      Parser.string("'"),
+    ).map(([, chars]) => chars.join(''));
 
     return Parser.oneOf(doubleQuotes, singleQuotes);
   }
@@ -188,7 +188,7 @@ export class Parser<+T> {
     return new Parser((input): string | Error => {
       const { startIndex, endIndex } = input;
       if (startIndex > endIndex) {
-        return new Error("End of input");
+        return new Error('End of input');
       }
       const match = input.string.slice(startIndex).match(regex);
       if (match) {
@@ -196,7 +196,7 @@ export class Parser<+T> {
         return match[0];
       }
       return new Error(
-        `Expected ${String(regex)}, got ${input.string.slice(startIndex)}`
+        `Expected ${String(regex)}, got ${input.string.slice(startIndex)}`,
       );
     });
   }
@@ -205,7 +205,7 @@ export class Parser<+T> {
     return new Parser((input): string | Error => {
       const { startIndex, endIndex } = input;
       if (startIndex > endIndex) {
-        return new Error("End of input");
+        return new Error('End of input');
       }
       let i = startIndex;
       while (i <= endIndex && predicate(input.string[i])) {
@@ -219,7 +219,7 @@ export class Parser<+T> {
 
   static get digit(): Parser<string> {
     return new Parser((input): string | Error => {
-      if (input.first >= "0" && input.first <= "9") {
+      if (input.first >= '0' && input.first <= '9') {
         const first = input.first;
         input.startIndex++;
         return first;
@@ -231,8 +231,8 @@ export class Parser<+T> {
   static get letter(): Parser<string> {
     return new Parser((input): string | Error => {
       if (
-        (input.first >= "a" && input.first <= "z") ||
-        (input.first >= "A" && input.first <= "Z")
+        (input.first >= 'a' && input.first <= 'z') ||
+        (input.first >= 'A' && input.first <= 'Z')
       ) {
         const returnValue = input.first;
         input.startIndex++;
@@ -244,53 +244,53 @@ export class Parser<+T> {
 
   static get natural(): Parser<number> {
     return Parser.sequence(
-      Parser.digit.where((digit) => digit !== "0"),
-      Parser.zeroOrMore(Parser.digit)
-    ).map(([first, rest]) => parseInt(first + rest.join(""), 10));
+      Parser.digit.where((digit) => digit !== '0'),
+      Parser.zeroOrMore(Parser.digit),
+    ).map(([first, rest]) => parseInt(first + rest.join(''), 10));
   }
 
   static get whole(): Parser<number> {
     return Parser.sequence(Parser.oneOrMore(Parser.digit)).map(([digits]) =>
-      parseInt(digits.join(""), 10)
+      parseInt(digits.join(''), 10),
     );
   }
 
   static get integer(): Parser<number> {
     return Parser.sequence(
-      Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
-      Parser.whole.map((int) => int || 0)
+      Parser.string('-').optional.map((char) => (char != null ? -1 : 1)),
+      Parser.whole.map((int) => int || 0),
     ).map(([sign, int]) => sign * int);
   }
 
   static get float(): Parser<number> {
     return Parser.oneOf(
       Parser.sequence(
-        Parser.string("-").optional.map((char) => (char != null ? -1 : 1)),
+        Parser.string('-').optional.map((char) => (char != null ? -1 : 1)),
         Parser.whole.optional.map((int) => int || 0),
-        Parser.string("."),
-        Parser.oneOrMore(Parser.digit)
+        Parser.string('.'),
+        Parser.oneOrMore(Parser.digit),
       ).map(
         ([sign, int, _, digits]) =>
-          sign * parseFloat(int + "." + digits.join(""))
+          sign * parseFloat(int + '.' + digits.join('')),
       ),
-      Parser.integer
+      Parser.integer,
     );
   }
 
   static get space(): Parser<void> {
-    return Parser.oneOrMore(Parser.string(" ")).map(() => undefined);
+    return Parser.oneOrMore(Parser.string(' ')).map(() => undefined);
   }
 
   static get whitespace(): Parser<void> {
     return Parser.oneOrMore(
       Parser.oneOf(
         // Spaces
-        Parser.string(" "),
+        Parser.string(' '),
         // Newlines
-        Parser.string("\n"),
+        Parser.string('\n'),
         // Carriage returns
-        Parser.string("\r\n")
-      )
+        Parser.string('\r\n'),
+      ),
     ).map(() => undefined);
   }
 }
@@ -365,7 +365,7 @@ class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
 }
 
 export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
-  $TupleMap<T, <O>(Parser<O>) => O>
+  $TupleMap<T, <O>(Parser<O>) => O>,
 > {
   +parsers: T;
 
@@ -377,14 +377,14 @@ export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
       const output: $TupleMap<T, <O>(Parser<O>) => O | Error> = parsers.map(
         <X>(parser: Parser<X>): X | Error => {
           if (failed) {
-            return Error("already failed");
+            return Error('already failed');
           }
           const result = parser.run(input);
           if (result instanceof Error) {
             failed = result;
           }
           return result;
-        }
+        },
       );
 
       if (failed) {
@@ -400,19 +400,19 @@ export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
   }
 
   separatedBy(
-    separator: Parser<mixed>
+    separator: Parser<mixed>,
   ): ParserSequence<$TupleMap<T, <O>(O) => O>> {
     return new ParserSequence(
       ...this.parsers.map(<X>(parser: Parser<X>, index): Parser<X> =>
-        index === 0 ? parser : parser.prefix(separator.map(() => undefined))
-      )
+        index === 0 ? parser : parser.prefix(separator.map(() => undefined)),
+      ),
     );
   }
 }
 
 // Similar to ParserSequence, but the parsers can occur in any order.
 class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
-  $TupleMap<T, <O>(Parser<O>) => O>
+  $TupleMap<T, <O>(Parser<O>) => O>,
 > {
   +parsers: T;
 
@@ -445,9 +445,9 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
           failed = new Error(
             `Expected one of ${parsers
               .map((parser) => parser.toString())
-              .join(", ")} but got ${errors
+              .join(', ')} but got ${errors
               .map((error) => error.message)
-              .join(", ")}`
+              .join(', ')}`,
           );
           break;
         }
@@ -467,8 +467,8 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
   separatedBy(separator: Parser<mixed>): ParserSet<$TupleMap<T, <O>(O) => O>> {
     return new ParserSet(
       ...this.parsers.map(<X>(parser: Parser<X>, index): Parser<X> =>
-        index === 0 ? parser : parser.prefix(separator.map(() => undefined))
-      )
+        index === 0 ? parser : parser.prefix(separator.map(() => undefined)),
+      ),
     );
   }
 }

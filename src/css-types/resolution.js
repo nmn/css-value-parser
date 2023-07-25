@@ -1,8 +1,8 @@
 // @flow strict
 
-import { Parser } from "../core";
+import { Parser } from '../core';
 
-type Unit = "dpi" | "dpcm" | "dppx";
+type Unit = 'dpi' | 'dpcm' | 'dppx';
 export class Resolution {
   +value: number;
   +unit: Unit;
@@ -19,22 +19,22 @@ export class Resolution {
 }
 
 export class Dpi extends Resolution {
-  +unit: Unit = "dpi";
+  +unit: Unit = 'dpi';
   static parse: Parser<Dpi> = Parser.float
-    .skip(Parser.string("dpi"))
-    .map((v) => new Dpi(v, "dpi"));
+    .skip(Parser.string('dpi'))
+    .map((v) => new Dpi(v, 'dpi'));
 }
 
 export class Dpcm extends Resolution {
-  +unit: Unit = "dpcm";
+  +unit: Unit = 'dpcm';
   static parse: Parser<Dpcm> = Parser.float
-    .skip(Parser.string("dpcm"))
-    .map((v) => new Dpcm(v, "dpcm"));
+    .skip(Parser.string('dpcm'))
+    .map((v) => new Dpcm(v, 'dpcm'));
 }
 
 export class Dppx extends Resolution {
-  +unit: Unit = "dppx";
+  +unit: Unit = 'dppx';
   static parse: Parser<Dppx> = Parser.float
-    .skip(Parser.oneOf(Parser.string("dppx"), Parser.string("x")))
-    .map((v) => new Dppx(v, "dppx"));
+    .skip(Parser.oneOf(Parser.string('dppx'), Parser.string('x')))
+    .map((v) => new Dppx(v, 'dppx'));
 }

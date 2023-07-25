@@ -1,10 +1,10 @@
 // @flow strict
 
-import { type CalcConstant, calcConstant } from "./calc-constant";
-import { Percentage } from "./common-types";
-import { type Dimension, dimension } from "./dimension";
+import { type CalcConstant, calcConstant } from './calc-constant';
+import { Percentage } from './common-types';
+import { type Dimension, dimension } from './dimension';
 
-import { Parser } from "../core";
+import { Parser } from '../core';
 
 type CalcValue =
   | number
@@ -17,8 +17,8 @@ type CalcValue =
 class CalcSum {
   +left: CalcValue;
   +right: CalcValue;
-  +operator: "+" | "-";
-  constructor(left: CalcValue, right: CalcValue, operator: "+" | "-") {
+  +operator: '+' | '-';
+  constructor(left: CalcValue, right: CalcValue, operator: '+' | '-') {
     this.left = left;
     this.right = right;
     this.operator = operator;
@@ -29,8 +29,8 @@ class CalcSum {
   static get parse(): Parser<CalcSum> {
     return Parser.sequence(
       calcValue,
-      Parser.oneOf(Parser.string("+"), Parser.string("-")),
-      calcValue
+      Parser.oneOf(Parser.string('+'), Parser.string('-')),
+      calcValue,
     )
       .separatedBy(Parser.whitespace)
       .map(([left, operator, right]) => new CalcSum(left, right, operator));
@@ -40,8 +40,8 @@ class CalcSum {
 class CalcProduct {
   +left: CalcValue;
   +right: CalcValue;
-  +operator: "*" | "/";
-  constructor(left: CalcValue, right: CalcValue, operator: "*" | "/") {
+  +operator: '*' | '/';
+  constructor(left: CalcValue, right: CalcValue, operator: '*' | '/') {
     this.left = left;
     this.right = right;
     this.operator = operator;
@@ -60,8 +60,8 @@ class CalcProduct {
   static get parse(): Parser<CalcProduct> {
     return Parser.sequence(
       calcValue,
-      Parser.oneOf(Parser.string("*"), Parser.string("/")),
-      calcValue
+      Parser.oneOf(Parser.string('*'), Parser.string('/')),
+      calcValue,
     )
       .separatedBy(Parser.whitespace)
       .map(([left, operator, right]) => new CalcProduct(left, right, operator));
@@ -74,13 +74,13 @@ const calcValueWithoutParens = Parser.oneOf(
   Percentage.parse,
   calcConstant,
   CalcSum.parse,
-  CalcProduct.parse
+  CalcProduct.parse,
 );
 
 export const calcValue: Parser<CalcValue> = Parser.oneOf(
   calcValueWithoutParens,
   calcValueWithoutParens
     .surroundedBy(Parser.whitespace.optional)
-    .prefix(Parser.string("("))
-    .skip(Parser.string(")"))
+    .prefix(Parser.string('('))
+    .skip(Parser.string(')')),
 );

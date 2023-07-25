@@ -1,10 +1,10 @@
 // @flow strict
 
-import { Parser } from "../core.js";
+import { Parser } from '../core.js';
 
 export class Angle {
   +value: number;
-  +unit: string = "";
+  +unit: string = '';
   constructor(value: number) {
     this.value = value;
   }
@@ -17,35 +17,35 @@ export class Angle {
       Grad.parse,
       Rad.parse,
       Turn.parse,
-      Parser.string("0").map(() => new Angle(0))
+      Parser.string('0').map(() => new Angle(0)),
     );
   }
 }
 
 export class Deg extends Angle {
-  +unit: string = "deg";
+  +unit: string = 'deg';
   static parse: Parser<Deg> = Parser.float
-    .skip(Parser.string("deg"))
+    .skip(Parser.string('deg'))
     .map((v) => new Deg(v));
 }
 
 export class Grad extends Angle {
-  +unit: string = "grad";
+  +unit: string = 'grad';
   static parse: Parser<Grad> = Parser.float
-    .skip(Parser.string("grad"))
+    .skip(Parser.string('grad'))
     .map((v) => new Grad(v));
 }
 
 export class Rad extends Angle {
-  +unit: string = "rad";
+  +unit: string = 'rad';
   static parse: Parser<Rad> = Parser.float
-    .skip(Parser.string("rad"))
+    .skip(Parser.string('rad'))
     .map((v) => new Rad(v));
 }
 
 export class Turn extends Angle {
-  +unit: string = "turn";
+  +unit: string = 'turn';
   static parse: Parser<Turn> = Parser.float
-    .skip(Parser.string("turn"))
+    .skip(Parser.string('turn'))
     .map((v) => new Turn(v));
 }

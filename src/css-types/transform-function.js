@@ -1,13 +1,13 @@
 // @flow strict
 
-import { Length } from "./length";
+import { Length } from './length';
 
-import { Parser } from "../core";
-import { number } from "./number";
-import { Angle } from "./angle";
-import { type Percentage, numberOrPercentage } from "./common-types";
-import { lengthPercentage } from "./length-percentage";
-import type { LengthPercentage } from "./length-percentage";
+import { Parser } from '../core';
+import { number } from './number';
+import { Angle } from './angle';
+import { type Percentage, numberOrPercentage } from './common-types';
+import { lengthPercentage } from './length-percentage';
+import type { LengthPercentage } from './length-percentage';
 
 export class TransformFunction {
   static get parse(): Parser<TransformFunction> {
@@ -27,7 +27,7 @@ export class TransformFunction {
       Translate3d.parse,
       TranslateX.parse,
       TranslateY.parse,
-      TranslateZ.parse
+      TranslateZ.parse,
     );
   }
 }
@@ -45,7 +45,7 @@ export class Matrix extends TransformFunction {
     c: number,
     d: number,
     tx: number,
-    ty: number
+    ty: number,
   ) {
     super();
     this.a = a;
@@ -60,9 +60,9 @@ export class Matrix extends TransformFunction {
   }
   static get parse(): Parser<Matrix> {
     return Parser.sequence(number, number, number, number, number, number)
-      .separatedBy(Parser.string(",").skip(Parser.whitespace.optional))
+      .separatedBy(Parser.string(',').skip(Parser.whitespace.optional))
       .surroundedBy(Parser.whitespace.optional)
-      .surroundedBy(Parser.string("matrix("), Parser.string(")"))
+      .surroundedBy(Parser.string('matrix('), Parser.string(')'))
       .map(([a, b, c, d, tx, ty]) => new Matrix(a, b, c, d, tx, ty));
   }
 }
@@ -75,20 +75,20 @@ export class Matrix3d extends TransformFunction {
     number, number, number, number,
     number, number, number, number
   ]>;
-  constructor(args: this["args"]) {
+  constructor(args: this['args']) {
     super();
     this.args = args;
   }
   toString(): string {
-    return `matrix3d(${this.args.join(", ")})`;
+    return `matrix3d(${this.args.join(', ')})`;
   }
   static get parse(): Parser<Matrix3d> {
     return Parser.sequence(
-      Parser.string("matrix3d("),
+      Parser.string('matrix3d('),
       Parser.oneOrMore(number)
-        .separatedBy(Parser.string(",").skip(Parser.whitespace.optional))
+        .separatedBy(Parser.string(',').skip(Parser.whitespace.optional))
         .where((args) => args.length === 16),
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, args]) => new Matrix3d((args: $FlowFixMe)));
@@ -107,9 +107,9 @@ export class Perspective extends TransformFunction {
 
   static get parse(): Parser<Perspective> {
     return Parser.sequence(
-      Parser.string("perspective("),
+      Parser.string('perspective('),
       Length.parse,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, length]) => new Perspective(length));
@@ -127,9 +127,9 @@ export class Rotate extends TransformFunction {
   }
   static get parse(): Parser<Rotate> {
     return Parser.sequence(
-      Parser.string("rotate("),
+      Parser.string('rotate('),
       Angle.parse,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, angle]) => new Rotate(angle));
@@ -165,11 +165,11 @@ export class Rotate3d extends TransformFunction {
   }
   static get parse(): Parser<Rotate3d> {
     return Parser.sequence(
-      Parser.string("rotate3d("),
+      Parser.string('rotate3d('),
       Parser.sequence(number, number, number, Angle.parse).separatedBy(
-        Parser.string(",").skip(Parser.whitespace.optional)
+        Parser.string(',').skip(Parser.whitespace.optional),
       ),
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, [x, y, z, angle]]) => new Rotate3d(x, y, z, angle));
@@ -178,8 +178,8 @@ export class Rotate3d extends TransformFunction {
 
 export class RotateAxis extends TransformFunction {
   +angle: Angle;
-  +axis: "X" | "Y" | "Z";
-  constructor(angle: Angle, axis: "X" | "Y" | "Z") {
+  +axis: 'X' | 'Y' | 'Z';
+  constructor(angle: Angle, axis: 'X' | 'Y' | 'Z') {
     super();
     this.angle = angle;
     this.axis = axis;
@@ -190,16 +190,16 @@ export class RotateAxis extends TransformFunction {
   static get parse(): Parser<RotateAxis> {
     return Parser.sequence(
       Parser.sequence(
-        Parser.string("rotate"),
-        Parser.oneOf<"X" | "Y" | "Z">(
-          Parser.string("X"),
-          Parser.string("Y"),
-          Parser.string("Z")
+        Parser.string('rotate'),
+        Parser.oneOf<'X' | 'Y' | 'Z'>(
+          Parser.string('X'),
+          Parser.string('Y'),
+          Parser.string('Z'),
         ),
-        Parser.string("(")
+        Parser.string('('),
       ).map(([_, axis, _1]) => axis),
       Angle.parse,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([axis, angle]) => new RotateAxis(angle, axis));
@@ -208,11 +208,11 @@ export class RotateAxis extends TransformFunction {
 
 export class Scale extends TransformFunction {
   +sx: number | Percentage;
-  +sy: ?number | Percentage;
-  constructor(sx: this["sx"], sy: this["sy"]) {
+  +sy: void | number | Percentage;
+  constructor(sx: this['sx'], sy?: ?this['sy']) {
     super();
     this.sx = sx;
-    this.sy = sy;
+    this.sy = sy ?? undefined;
   }
   toString(): string {
     const { sx, sy } = this;
@@ -223,12 +223,12 @@ export class Scale extends TransformFunction {
   }
   static get parse(): Parser<Scale> {
     const args = Parser.oneOf<
-      number | Percentage | [number | Percentage, number | Percentage]
+      number | Percentage | [number | Percentage, number | Percentage],
     >(
       Parser.sequence(numberOrPercentage, numberOrPercentage).separatedBy(
-        Parser.string(",").skip(Parser.whitespace.optional)
+        Parser.string(',').skip(Parser.whitespace.optional),
       ),
-      numberOrPercentage
+      numberOrPercentage,
     ).map((arg) => {
       if (Array.isArray(arg)) {
         return arg;
@@ -236,7 +236,7 @@ export class Scale extends TransformFunction {
       return [arg, null];
     });
 
-    return Parser.sequence(Parser.string("scale("), args, Parser.string(")"))
+    return Parser.sequence(Parser.string('scale('), args, Parser.string(')'))
       .separatedBy(Parser.whitespace.optional)
       .map(([_, [sx, sy]]) => new Scale(sx, sy));
   }
@@ -246,7 +246,7 @@ export class Scale3d extends TransformFunction {
   +sx: number | Percentage;
   +sy: number | Percentage;
   +sz: number | Percentage;
-  constructor(sx: this["sx"], sy: this["sy"], sz: this["sz"]) {
+  constructor(sx: this['sx'], sy: this['sy'], sz: this['sz']) {
     super();
     this.sx = sx;
     this.sy = sy;
@@ -257,13 +257,13 @@ export class Scale3d extends TransformFunction {
   }
   static get parse(): Parser<Scale3d> {
     return Parser.sequence(
-      Parser.string("scale3d("),
+      Parser.string('scale3d('),
       Parser.sequence(
         numberOrPercentage,
         numberOrPercentage,
-        numberOrPercentage
-      ).separatedBy(Parser.string(",").skip(Parser.whitespace.optional)),
-      Parser.string(")")
+        numberOrPercentage,
+      ).separatedBy(Parser.string(',').skip(Parser.whitespace.optional)),
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, [sx, sy, sz]]) => new Scale3d(sx, sy, sz));
@@ -272,8 +272,8 @@ export class Scale3d extends TransformFunction {
 
 export class ScaleAxis extends TransformFunction {
   +s: number | Percentage;
-  +axis: "X" | "Y" | "Z";
-  constructor(s: this["s"], axis: this["axis"]) {
+  +axis: 'X' | 'Y' | 'Z';
+  constructor(s: this['s'], axis: this['axis']) {
     super();
     this.s = s;
     this.axis = axis;
@@ -284,16 +284,16 @@ export class ScaleAxis extends TransformFunction {
   static get parse(): Parser<ScaleAxis> {
     return Parser.sequence(
       Parser.sequence(
-        Parser.string("scale"),
-        Parser.oneOf<"X" | "Y" | "Z">(
-          Parser.string("X"),
-          Parser.string("Y"),
-          Parser.string("Z")
+        Parser.string('scale'),
+        Parser.oneOf<'X' | 'Y' | 'Z'>(
+          Parser.string('X'),
+          Parser.string('Y'),
+          Parser.string('Z'),
         ),
-        Parser.string("(")
+        Parser.string('('),
       ).map(([_, axis, _1]) => axis),
       numberOrPercentage,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([axis, s]) => new ScaleAxis(s, axis));
@@ -302,11 +302,11 @@ export class ScaleAxis extends TransformFunction {
 
 export class Skew extends TransformFunction {
   +ax: Angle;
-  +ay: ?Angle;
-  constructor(ax: this["ax"], ay: this["ay"]) {
+  +ay: void | Angle;
+  constructor(ax: this['ax'], ay?: ?this['ay']) {
     super();
     this.ax = ax;
-    this.ay = ay;
+    this.ay = ay ?? undefined;
   }
   toString(): string {
     const { ax, ay } = this;
@@ -318,9 +318,9 @@ export class Skew extends TransformFunction {
   static get parse(): Parser<Skew> {
     const args = Parser.oneOf<Angle | [Angle, Angle]>(
       Parser.sequence(Angle.parse, Angle.parse).separatedBy(
-        Parser.string(",").skip(Parser.whitespace.optional)
+        Parser.string(',').skip(Parser.whitespace.optional),
       ),
-      Angle.parse
+      Angle.parse,
     ).map((arg) => {
       if (Array.isArray(arg)) {
         return arg;
@@ -328,7 +328,7 @@ export class Skew extends TransformFunction {
       return [arg, null];
     });
 
-    return Parser.sequence(Parser.string("skew("), args, Parser.string(")"))
+    return Parser.sequence(Parser.string('skew('), args, Parser.string(')'))
       .separatedBy(Parser.whitespace.optional)
       .map(([_, [ax, ay]]) => new Skew(ax, ay));
   }
@@ -336,8 +336,8 @@ export class Skew extends TransformFunction {
 
 export class SkewAxis extends TransformFunction {
   +a: Angle;
-  +axis: "X" | "Y";
-  constructor(a: this["a"], axis: this["axis"]) {
+  +axis: 'X' | 'Y';
+  constructor(a: this['a'], axis: this['axis']) {
     super();
     this.a = a;
     this.axis = axis;
@@ -348,12 +348,12 @@ export class SkewAxis extends TransformFunction {
   static get parse(): Parser<SkewAxis> {
     return Parser.sequence(
       Parser.sequence(
-        Parser.string("skew"),
-        Parser.oneOf<"X" | "Y">(Parser.string("X"), Parser.string("Y")),
-        Parser.string("(")
+        Parser.string('skew'),
+        Parser.oneOf<'X' | 'Y'>(Parser.string('X'), Parser.string('Y')),
+        Parser.string('('),
       ).map(([_, axis, _1]) => axis),
       Angle.parse,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([axis, a]) => new SkewAxis(a, axis));
@@ -362,11 +362,11 @@ export class SkewAxis extends TransformFunction {
 
 export class Translate extends TransformFunction {
   +tx: LengthPercentage;
-  +ty: ?LengthPercentage;
-  constructor(tx: LengthPercentage, ty: ?LengthPercentage) {
+  +ty: void | LengthPercentage;
+  constructor(tx: this['tx'], ty?: ?this['ty']) {
     super();
     this.tx = tx;
-    this.ty = ty;
+    this.ty = ty ?? undefined;
   }
   toString(): string {
     const { tx, ty } = this;
@@ -379,10 +379,10 @@ export class Translate extends TransformFunction {
     const oneArg = lengthPercentage;
     const twoArgs = Parser.sequence(
       lengthPercentage,
-      lengthPercentage
-    ).separatedBy(Parser.string(",").skip(Parser.whitespace.optional));
+      lengthPercentage,
+    ).separatedBy(Parser.string(',').skip(Parser.whitespace.optional));
     const args = Parser.oneOf<
-      LengthPercentage | [LengthPercentage, LengthPercentage]
+      LengthPercentage | [LengthPercentage, LengthPercentage],
     >(twoArgs, oneArg).map((arg) => {
       if (Array.isArray(arg)) {
         return arg;
@@ -391,9 +391,9 @@ export class Translate extends TransformFunction {
     });
 
     return Parser.sequence(
-      Parser.string("translate("),
+      Parser.string('translate('),
       args,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, [tx, ty]]) => new Translate(tx, ty));
@@ -415,13 +415,13 @@ export class Translate3d extends TransformFunction {
   }
   static get parse(): Parser<Translate3d> {
     return Parser.sequence(
-      Parser.string("translate3d("),
+      Parser.string('translate3d('),
       Parser.sequence(
         lengthPercentage,
         lengthPercentage,
-        Length.parse
-      ).separatedBy(Parser.string(",").skip(Parser.whitespace.optional)),
-      Parser.string(")")
+        Length.parse,
+      ).separatedBy(Parser.string(',').skip(Parser.whitespace.optional)),
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, [tx, ty, tz]]) => new Translate3d(tx, ty, tz));
@@ -439,9 +439,9 @@ export class TranslateX extends TransformFunction {
   }
   static get parse(): Parser<TranslateX> {
     return Parser.sequence(
-      Parser.string("translateX("),
+      Parser.string('translateX('),
       lengthPercentage,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, tx]) => new TranslateX(tx));
@@ -459,9 +459,9 @@ export class TranslateY extends TransformFunction {
   }
   static get parse(): Parser<TranslateY> {
     return Parser.sequence(
-      Parser.string("translateY("),
+      Parser.string('translateY('),
       lengthPercentage,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, ty]) => new TranslateY(ty));
@@ -479,9 +479,9 @@ export class TranslateZ extends TransformFunction {
   }
   static get parse(): Parser<TranslateZ> {
     return Parser.sequence(
-      Parser.string("translateZ("),
+      Parser.string('translateZ('),
       Length.parse,
-      Parser.string(")")
+      Parser.string(')'),
     )
       .separatedBy(Parser.whitespace.optional)
       .map(([_, tz]) => new TranslateZ(tz));

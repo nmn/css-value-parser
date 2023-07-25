@@ -1,7 +1,7 @@
 // @flow strict
 
-import { Parser } from "../core.js";
-import { TransformFunction } from "../css-types/transform-function.js";
+import { Parser } from '../core.js';
+import { TransformFunction } from '../css-types/transform-function.js';
 
 export class Transform {
   +value: $ReadOnlyArray<TransformFunction>;
@@ -11,7 +11,7 @@ export class Transform {
   }
 
   toString(): string {
-    return this.value.join(" ");
+    return this.value.join(' ');
   }
 
   static get parse(): Parser<Transform> {

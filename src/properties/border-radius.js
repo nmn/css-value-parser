@@ -1,9 +1,9 @@
 // @flow strict
 
-import type { LengthPercentage } from "../css-types/length-percentage";
+import type { LengthPercentage } from '../css-types/length-percentage';
 
-import { Parser } from "../core";
-import { lengthPercentage } from "../css-types/length-percentage";
+import { Parser } from '../core';
+import { lengthPercentage } from '../css-types/length-percentage';
 
 export class BorderRadius {
   primary: LengthPercentage;
@@ -27,8 +27,8 @@ export class BorderRadius {
     return Parser.oneOf(
       lengthPercentage.map((p) => [p, p]),
       Parser.sequence(lengthPercentage, lengthPercentage).separatedBy(
-        Parser.whitespace
-      )
+        Parser.whitespace,
+      ),
     ).map(([primary, secondary]) => new BorderRadius(primary, secondary));
   }
 }
@@ -52,7 +52,7 @@ export class BorderRadiusShorthand {
     sTopLeft: LengthPercentage = pTopLeft,
     sTopRight: LengthPercentage = sTopLeft,
     sBottomRight: LengthPercentage = sTopLeft,
-    sBottomLeft: LengthPercentage = sTopRight
+    sBottomLeft: LengthPercentage = sTopRight,
   ) {
     this.pTopLeft = pTopLeft;
     this.pTopRight = pTopRight;
@@ -120,24 +120,24 @@ export class BorderRadiusShorthand {
       lengthPercentage,
       lengthPercentage.prefix(Parser.whitespace).optional,
       lengthPercentage.prefix(Parser.whitespace).optional,
-      lengthPercentage.prefix(Parser.whitespace).optional
+      lengthPercentage.prefix(Parser.whitespace).optional,
     ).map(
       ([
         topLeft,
         topRight = topLeft,
         bottomRight = topLeft,
         bottomLeft = topRight,
-      ]) => [topLeft, topRight, bottomRight, bottomLeft]
+      ]) => [topLeft, topRight, bottomRight, bottomLeft],
     );
 
     return Parser.sequence(
       spaceSeparatedRadii,
       spaceSeparatedRadii.prefix(
-        Parser.string("/").surroundedBy(Parser.whitespace)
-      ).optional
+        Parser.string('/').surroundedBy(Parser.whitespace),
+      ).optional,
     ).map(
       ([pRadii, sRadii = pRadii]) =>
-        new BorderRadiusShorthand(...pRadii, ...sRadii)
+        new BorderRadiusShorthand(...pRadii, ...sRadii),
     );
   }
 }

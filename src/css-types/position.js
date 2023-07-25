@@ -1,10 +1,10 @@
 // @flow strict
 
-import { Parser } from "../core";
-import { type LengthPercentage, lengthPercentage } from "./length-percentage";
+import { Parser } from '../core';
+import { type LengthPercentage, lengthPercentage } from './length-percentage';
 
-type HorizonalKeyword = "left" | "center" | "right";
-type VerticalKeyword = "top" | "center" | "bottom";
+type HorizonalKeyword = 'left' | 'center' | 'right';
+type VerticalKeyword = 'top' | 'center' | 'bottom';
 
 type Horizontal =
   | LengthPercentage
@@ -25,42 +25,42 @@ export class Position {
 
   toString(): string {
     const horizontal = Array.isArray(this.horizontal)
-      ? this.horizontal.join(" ")
+      ? this.horizontal.join(' ')
       : this.horizontal.toString();
     const vertical = Array.isArray(this.vertical)
-      ? this.vertical.join(" ")
+      ? this.vertical.join(' ')
       : this.vertical.toString();
     return `${horizontal} ${vertical}`;
   }
 
   static get parse(): Parser<Position> {
     const horizontalKeyword = Parser.oneOf(
-      Parser.string("left"),
-      Parser.string("center"),
-      Parser.string("right")
+      Parser.string('left'),
+      Parser.string('center'),
+      Parser.string('right'),
     );
     const verticalKeyword = Parser.oneOf(
-      Parser.string("top"),
-      Parser.string("center"),
-      Parser.string("bottom")
+      Parser.string('top'),
+      Parser.string('center'),
+      Parser.string('bottom'),
     );
 
     const horizontal: Parser<Horizontal> = Parser.sequence(
       horizontalKeyword,
-      lengthPercentage.prefix(Parser.whitespace).optional
+      lengthPercentage.prefix(Parser.whitespace).optional,
     ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
 
     const vertical: Parser<Vertical> = Parser.sequence(
       verticalKeyword,
-      lengthPercentage.prefix(Parser.whitespace).optional
+      lengthPercentage.prefix(Parser.whitespace).optional,
     ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
     return Parser.oneOf(
       Parser.setOf(horizontal, vertical).separatedBy(Parser.whitespace),
       Parser.setOf(horizontal, lengthPercentage).separatedBy(Parser.whitespace),
       Parser.setOf(lengthPercentage, vertical).separatedBy(Parser.whitespace),
       Parser.sequence(lengthPercentage, lengthPercentage).separatedBy(
-        Parser.whitespace
-      )
+        Parser.whitespace,
+      ),
     ).map(([h, v]) => new Position(h, v));
   }
 }

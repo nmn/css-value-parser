@@ -1,7 +1,7 @@
 // @flow strict
 
-import { Parser } from "../core";
-import { CustomIdentifier } from "./custom-ident";
+import { Parser } from '../core';
+import { CustomIdentifier } from './custom-ident';
 
 export class DashedIdentifier {
   +value: string;
@@ -11,8 +11,8 @@ export class DashedIdentifier {
   }
 
   static get parse(): Parser<DashedIdentifier> {
-    return Parser.sequence(Parser.string("--"), CustomIdentifier.parse).map(
-      ([dash, ident]) => new DashedIdentifier(dash + ident.value)
+    return Parser.sequence(Parser.string('--'), CustomIdentifier.parse).map(
+      ([dash, ident]) => new DashedIdentifier(dash + ident.value),
     );
   }
 }

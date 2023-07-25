@@ -1,12 +1,12 @@
 // @flow strict
 
-import { Parser } from "../core.js";
-import { number } from "./number";
+import { Parser } from '../core.js';
+import { number } from './number';
 
 // All units are numberic
 export class Length {
   +value: number;
-  +unit: string = "";
+  +unit: string = '';
 
   constructor(value: number) {
     this.value = value;
@@ -66,7 +66,7 @@ export class Length {
       Pt.parse,
 
       // If nothing else, check for a plain `0`
-      Parser.string("0").map(() => new Length(0))
+      Parser.string('0').map(() => new Length(0)),
     );
   }
 }
@@ -81,75 +81,75 @@ function unit<T: Length>(unit: string, Constructor: Class<T>): Parser<T> {
 /// ====================
 
 export class Cap extends Length {
-  unit: "cap" = "cap";
+  unit: 'cap' = 'cap';
 
   constructor(value: number) {
     super(value);
   }
 
   static get parse(): Parser<Cap> {
-    return unit("cap", Cap);
+    return unit('cap', Cap);
   }
 }
 
 export class Ch extends Length {
-  unit: "ch" = "ch";
+  unit: 'ch' = 'ch';
 
   constructor(value: number) {
     super(value);
   }
 
-  static parse: Parser<Ch> = unit("ch", Ch);
+  static parse: Parser<Ch> = unit('ch', Ch);
 }
 
 export class Em extends Length {
-  unit: "em" = "em";
+  unit: 'em' = 'em';
 
   constructor(value: number) {
     super(value);
   }
 
-  static parse: Parser<Em> = unit("em", Em);
+  static parse: Parser<Em> = unit('em', Em);
 }
 
 export class Ex extends Length {
-  unit: "ex" = "ex";
+  unit: 'ex' = 'ex';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Ex> = unit("ex", Ex);
+  static parse: Parser<Ex> = unit('ex', Ex);
 }
 
 export class Ic extends Length {
-  unit: "ic" = "ic";
+  unit: 'ic' = 'ic';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Ic> = unit("ic", Ic);
+  static parse: Parser<Ic> = unit('ic', Ic);
 }
 
 export class Lh extends Length {
-  unit: "lh" = "lh";
+  unit: 'lh' = 'lh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Lh> = unit("lh", Lh);
+  static parse: Parser<Lh> = unit('lh', Lh);
 }
 
 export class Rem extends Length {
-  unit: "rem" = "rem";
+  unit: 'rem' = 'rem';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Rem> = unit("rem", Rem);
+  static parse: Parser<Rem> = unit('rem', Rem);
 }
 
 export class Rlh extends Length {
-  unit: "rlh" = "rlh";
+  unit: 'rlh' = 'rlh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Rlh> = unit("rlh", Rlh);
+  static parse: Parser<Rlh> = unit('rlh', Rlh);
 }
 
 /// ====================
@@ -158,116 +158,116 @@ export class Rlh extends Length {
 /// ====================
 
 export class Vh extends Length {
-  unit: "vh" = "vh";
+  unit: 'vh' = 'vh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Vh> = unit("vh", Vh);
+  static parse: Parser<Vh> = unit('vh', Vh);
 }
 export class Svh extends Length {
-  unit: "svh" = "svh";
+  unit: 'svh' = 'svh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Svh> = unit("svh", Svh);
+  static parse: Parser<Svh> = unit('svh', Svh);
 }
 export class Lvh extends Length {
-  unit: "lvh" = "lvh";
+  unit: 'lvh' = 'lvh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Lvh> = unit("lvh", Lvh);
+  static parse: Parser<Lvh> = unit('lvh', Lvh);
 }
 export class Dvh extends Length {
-  unit: "dvh" = "dvh";
+  unit: 'dvh' = 'dvh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Dvh> = unit("dvh", Dvh);
+  static parse: Parser<Dvh> = unit('dvh', Dvh);
 }
 export class Vw extends Length {
-  unit: "vw" = "vw";
+  unit: 'vw' = 'vw';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Vw> = unit("vw", Vw);
+  static parse: Parser<Vw> = unit('vw', Vw);
 }
 export class Svw extends Length {
-  unit: "svw" = "svw";
+  unit: 'svw' = 'svw';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Svw> = unit("svw", Svw);
+  static parse: Parser<Svw> = unit('svw', Svw);
 }
 export class Lvw extends Length {
-  unit: "lvw" = "lvw";
+  unit: 'lvw' = 'lvw';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Lvw> = unit("lvw", Lvw);
+  static parse: Parser<Lvw> = unit('lvw', Lvw);
 }
 export class Dvw extends Length {
-  unit: "dvw" = "dvw";
+  unit: 'dvw' = 'dvw';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Dvw> = unit("dvw", Dvw);
+  static parse: Parser<Dvw> = unit('dvw', Dvw);
 }
 export class Vmin extends Length {
-  unit: "vmin" = "vmin";
+  unit: 'vmin' = 'vmin';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Vmin> = unit("vmin", Vmin);
+  static parse: Parser<Vmin> = unit('vmin', Vmin);
 }
 export class Svmin extends Length {
-  unit: "svmin" = "svmin";
+  unit: 'svmin' = 'svmin';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Svmin> = unit("svmin", Svmin);
+  static parse: Parser<Svmin> = unit('svmin', Svmin);
 }
 export class Lvmin extends Length {
-  unit: "lvmin" = "lvmin";
+  unit: 'lvmin' = 'lvmin';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Lvmin> = unit("lvmin", Lvmin);
+  static parse: Parser<Lvmin> = unit('lvmin', Lvmin);
 }
 export class Dvmin extends Length {
-  unit: "dvmin" = "dvmin";
+  unit: 'dvmin' = 'dvmin';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Dvmin> = unit("dvmin", Dvmin);
+  static parse: Parser<Dvmin> = unit('dvmin', Dvmin);
 }
 export class Vmax extends Length {
-  unit: "vmax" = "vmax";
+  unit: 'vmax' = 'vmax';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Vmax> = unit("vmax", Vmax);
+  static parse: Parser<Vmax> = unit('vmax', Vmax);
 }
 export class Svmax extends Length {
-  unit: "svmax" = "svmax";
+  unit: 'svmax' = 'svmax';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Svmax> = unit("svmax", Svmax);
+  static parse: Parser<Svmax> = unit('svmax', Svmax);
 }
 export class Lvmax extends Length {
-  unit: "lvmax" = "lvmax";
+  unit: 'lvmax' = 'lvmax';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Lvmax> = unit("lvmax", Lvmax);
+  static parse: Parser<Lvmax> = unit('lvmax', Lvmax);
 }
 export class Dvmax extends Length {
-  unit: "dvmax" = "dvmax";
+  unit: 'dvmax' = 'dvmax';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Dvmax> = unit("dvmax", Dvmax);
+  static parse: Parser<Dvmax> = unit('dvmax', Dvmax);
 }
 
 /// ====================
@@ -276,42 +276,42 @@ export class Dvmax extends Length {
 /// ====================
 
 export class Cqw extends Length {
-  unit: "cqw" = "cqw";
+  unit: 'cqw' = 'cqw';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Cqw> = unit("cqw", Cqw);
+  static parse: Parser<Cqw> = unit('cqw', Cqw);
 }
 export class Cqi extends Length {
-  unit: "cqi" = "cqi";
+  unit: 'cqi' = 'cqi';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Cqi> = unit("cqi", Cqi);
+  static parse: Parser<Cqi> = unit('cqi', Cqi);
 }
 export class Cqh extends Length {
-  unit: "cqh" = "cqh";
+  unit: 'cqh' = 'cqh';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Cqh> = unit("cqh", Cqh);
+  static parse: Parser<Cqh> = unit('cqh', Cqh);
 }
 export class Cqb extends Length {
-  unit: "cqb" = "cqb";
+  unit: 'cqb' = 'cqb';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Cqb> = unit("cqb", Cqb);
+  static parse: Parser<Cqb> = unit('cqb', Cqb);
 }
 export class Cqmin extends Length {
-  unit: "cqmin" = "cqmin";
+  unit: 'cqmin' = 'cqmin';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Cqmin> = unit("cqmin", Cqmin);
+  static parse: Parser<Cqmin> = unit('cqmin', Cqmin);
 }
 export class Cqmax extends Length {
-  static parse: Parser<Cqmax> = unit("cqmax", Cqmax);
+  static parse: Parser<Cqmax> = unit('cqmax', Cqmax);
 }
 
 /// ====================
@@ -320,39 +320,39 @@ export class Cqmax extends Length {
 /// ====================
 
 export class Px extends Length {
-  unit: "px" = "px";
+  unit: 'px' = 'px';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Px> = unit("px", Px);
+  static parse: Parser<Px> = unit('px', Px);
 }
 export class Cm extends Length {
-  unit: "cm" = "cm";
+  unit: 'cm' = 'cm';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Cm> = unit("cm", Cm);
+  static parse: Parser<Cm> = unit('cm', Cm);
 }
 export class Mm extends Length {
-  unit: "mm" = "mm";
+  unit: 'mm' = 'mm';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Mm> = unit("mm", Mm);
+  static parse: Parser<Mm> = unit('mm', Mm);
 }
 export class In extends Length {
-  unit: "in" = "in";
+  unit: 'in' = 'in';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<In> = unit("in", In);
+  static parse: Parser<In> = unit('in', In);
 }
 export class Pt extends Length {
-  unit: "pt" = "pt";
+  unit: 'pt' = 'pt';
   constructor(value: number) {
     super(value);
   }
-  static parse: Parser<Pt> = unit("pt", Pt);
+  static parse: Parser<Pt> = unit('pt', Pt);
 }
 
 // TODO: CALC

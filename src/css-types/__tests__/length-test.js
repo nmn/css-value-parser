@@ -25,26 +25,26 @@ import {
   Mm,
   In,
   Pt,
-} from "../length";
-import { SubString } from "../../base-types";
+} from '../length';
+import { SubString } from '../../base-types';
 
-describe("Test CSS Type: <length>", () => {
-  test("parses CSS length types strings correctly", () => {
-    expect(Length.parse.parseToEnd("0")).toEqual(new Length(0));
-    expect(Length.parse.parseToEnd("10px")).toEqual(new Px(10));
-    expect(Length.parse.parseToEnd("5rem")).toEqual(new Rem(5));
-    expect(Length.parse.parseToEnd("2.5em")).toEqual(new Em(2.5));
-    expect(Length.parse.parseToEnd("2in")).toEqual(new In(2));
-    expect(Length.parse.parseToEnd("15pt")).toEqual(new Pt(15));
+describe('Test CSS Type: <length>', () => {
+  test('parses CSS length types strings correctly', () => {
+    expect(Length.parse.parseToEnd('0')).toEqual(new Length(0));
+    expect(Length.parse.parseToEnd('10px')).toEqual(new Px(10));
+    expect(Length.parse.parseToEnd('5rem')).toEqual(new Rem(5));
+    expect(Length.parse.parseToEnd('2.5em')).toEqual(new Em(2.5));
+    expect(Length.parse.parseToEnd('2in')).toEqual(new In(2));
+    expect(Length.parse.parseToEnd('15pt')).toEqual(new Pt(15));
   });
 
-  test("parses CSS length types subStrings correctly", () => {
-    let val = new SubString("0rem");
+  test('parses CSS length types subStrings correctly', () => {
+    let val = new SubString('0rem');
     expect(Length.parse.run(val)).toEqual(new Rem(0));
-    expect(val.toString()).toEqual("");
+    expect(val.toString()).toEqual('');
 
-    val = new SubString("10px foo");
+    val = new SubString('10px foo');
     expect(Length.parse.run(val)).toEqual(new Px(10));
-    expect(val.toString()).toEqual(" foo");
+    expect(val.toString()).toEqual(' foo');
   });
 });
