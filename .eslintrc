@@ -1,29 +1,12 @@
 {
   // babel parser to support ES6/7 features
-  "parser": "@babel/eslint-parser",
-  "parserOptions": {
-    "babelOptions": {
-      "presets": [
-        "@babel/preset-env",
-        "@babel/preset-flow"
-      ],
-      "plugins": [
-        "@babel/plugin-proposal-class-properties"
-      ]
-    },
-    "ecmaVersion": 7,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    },
-    "requireConfigFile": false,
-    "sourceType": "module"
-  },
+  "parser": "hermes-eslint",
   "extends": [
-    "plugin:flowtype/recommended",
+    "plugin:ft-flow/recommended",
     "prettier"
   ],
   "plugins": [
-    "flowtype"
+    "ft-flow"
   ],
   "env": {
     "browser": true,
@@ -104,7 +87,7 @@
     "no-sparse-arrays": 2,
     "no-this-before-super": 2,
     "no-throw-literal": 2,
-    "no-undef": 2,
+    "no-undef": 0,
     "no-undef-init": 2,
     "no-unexpected-multiline": 2,
     "no-unmodified-loop-condition": 2,
