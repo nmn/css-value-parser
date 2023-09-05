@@ -17,9 +17,9 @@ import {
   Translate3d,
   TranslateX,
   TranslateY,
-} from '../transform-function.js';
+} from '../transform-function';
 
-import { Length, Px, Em } from '../length.js';
+import { Length, Px, Em } from '../length';
 import { Angle, Deg, Grad, Rad, Turn } from '../angle';
 import { Percentage } from '../common-types';
 
