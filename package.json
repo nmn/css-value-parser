@@ -2,6 +2,10 @@
   "name": "typed-css-parser",
   "version": "1.0.0",
   "description": "A detailed parser for the values of CSS properties",
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "type": "module",
   "main": "lib/index.mjs",
   "scripts": {
     "prebuild": "node ./scripts/gen-types.js",
