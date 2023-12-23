@@ -19,7 +19,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
 
   const jsFlowFiles = dirents
     .filter((dirent) => dirent.name.endsWith('.js.flow'))
-    .map((dirent) => dirent.name.replace(/\.js\.flow$/, '.mjs'));
+    .map((dirent) => dirent.name.replace(/\.js\.flow$/, '.js'));
 
   const dTsFiles = dirents
     .filter((dirent) => dirent.name.endsWith('.d.ts'))
@@ -28,10 +28,11 @@ async function generateTypes(inputDir, outputDir, rootDir) {
   dirents = dirents.filter((dirents) => !jsFlowFiles.includes(dirents.name));
 
   for (const dirent of dirents) {
+    console.log(`Processing ${dirent.name}`)
     const inputFullPath = path.join(inputDir, dirent.name);
     const outputFullPath = path
       .join(outputDir, dirent.name)
-      .replace(/\.js\.flow$/, '.mjs');
+      .replace(/\.js\.flow$/, '.js');
     if (dirent.isDirectory()) {
       if (dirent.name !== '__tests__') {
         await generateTypes(inputFullPath, outputFullPath, rootPath);
@@ -46,7 +47,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
         );
       }
 
-      if (dirent.name.endsWith('.mjs') || dirent.name.endsWith('.js.flow')) {
+      if (dirent.name.endsWith('.js') || dirent.name.endsWith('.js.flow')) {
         try {
           let fileContents = await fsPromises.readFile(inputFullPath, 'utf8');
           fileContents = preprocessFileContents(fileContents);
@@ -61,11 +62,11 @@ async function generateTypes(inputDir, outputDir, rootDir) {
           );
 
           await fsPromises.writeFile(
-            outputFullPath.replace(/\.mjs$/, '.js.flow'),
+            outputFullPath.replace(/\.js$/, '.js.flow'),
             outputFlowContents,
           );
           const tsOutputName = dirent.name
-            .replace(/\.mjs$/, '.d.ts')
+            .replace(/\.js$/, '.d.ts')
             .replace(/\.js\.flow$/, '.d.ts');
           if (dTsFiles.includes(tsOutputName)) {
             continue;
@@ -75,7 +76,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
             monorepoPackage.prettier,
           );
           await fsPromises.writeFile(
-            outputFullPath.replace(/\.mjs$/, '.d.ts'),
+            outputFullPath.replace(/\.js$/, '.d.ts'),
             // Typescript Prefers `NodePath` unlike `NodePath<>` in Flow
             // `flow-api-translator` doesn't handle this case yet.
             postProcessTSOutput(outputTSContents),
