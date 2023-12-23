@@ -1,6 +1,6 @@
 // @flow strict
 
-import { SubString } from './base-types.js';
+import { SubString } from './base-types';
 
 export class Parser<+T> {
   +run: (input: SubString) => T | Error;
