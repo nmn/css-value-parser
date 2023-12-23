@@ -401,14 +401,19 @@ export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
     this.parsers = parsers;
   }
 
-  separatedBy(
-    separator: Parser<mixed>,
-  ): ParserSequence<$TupleMap<T, <O>(O) => O>> {
-    return new ParserSequence(
-      ...this.parsers.map(<X>(parser: Parser<X>, index): Parser<X> =>
-        index === 0 ? parser : parser.prefix(separator.map(() => undefined)),
-      ),
-    );
+  separatedBy(separator: Parser<mixed>): ParserSequence<T> {
+    // This is UNSAFE. No way to safely map a tuple with Flow.
+    const parsers: [...T] = [...this.parsers];
+
+    for (let i = 1; i < parsers.length; i++) {
+      const originalParser = parsers[i];
+      const modifiedParser = originalParser.prefix(
+        separator.map(() => undefined),
+      );
+      parsers[i] = modifiedParser;
+    }
+
+    return new ParserSequence(...parsers);
   }
 }
 
@@ -466,12 +471,18 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
     this.parsers = parsers;
   }
 
-  separatedBy(separator: Parser<mixed>): ParserSet<$TupleMap<T, <O>(O) => O>> {
-    return new ParserSet(
-      ...this.parsers.map(<X>(parser: Parser<X>, index): Parser<X> =>
-        index === 0 ? parser : parser.prefix(separator.map(() => undefined)),
-      ),
-    );
+  separatedBy(separator: Parser<mixed>): ParserSet<T> {
+    // This is UNSAFE. No way to safely map a tuple with Flow.
+    const parsers: [...T] = [...this.parsers];
+    for (let i = 1; i < parsers.length; i++) {
+      const originalParser = parsers[i];
+      const modifiedParser = originalParser.prefix(
+        separator.map(() => undefined),
+      );
+      parsers[i] = modifiedParser;
+    }
+
+    return new ParserSet(...(parsers: T));
   }
 }
 
