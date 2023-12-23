@@ -11,9 +11,9 @@ import {
   Scale3d,
   Skew,
   Translate,
-} from '../../css-types/transform-function';
+} from '../../css-types/transform-function.js';
 
-import { Px } from '../../css-types/length';
+import { Px } from '../../css-types/length.js';
 import { Deg } from '../../css-types/angle';
 import { Transform } from '../transform';
 

@@ -1,6 +1,6 @@
 // @flow strict
 
-import { Parser } from '../core';
+import { Parser } from '../core.js';
 
 export class Angle {
   +value: number;

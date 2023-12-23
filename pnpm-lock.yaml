@@ -38,12 +38,9 @@ devDependencies:
   eslint-plugin-ft-flow:
     specifier: ^3.0.0
     version: 3.0.0(eslint@8.48.0)(hermes-eslint@0.15.1)
-  flow-api-translator:
-    specifier: ^0.15.1
-    version: 0.15.1(prettier-plugin-hermes-parser@0.15.1)(prettier@3.0.0)
   flow-bin:
-    specifier: ^0.215.1
-    version: 0.215.1
+    specifier: ^0.205.0
+    version: 0.205.1
   hermes-eslint:
     specifier: ^0.15.1
     version: 0.15.1
@@ -53,9 +50,6 @@ devDependencies:
   prettier:
     specifier: 3.0.0
     version: 3.0.0
-  yargs:
-    specifier: ^17.7.2
-    version: 17.7.2
 
 packages:
 
@@ -1787,19 +1781,6 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@typescript-eslint/types@5.62.0:
-    resolution: {integrity: sha512-87NVngcbVXUahrRTqIK27gD2t5Cu1yuCXxbLcFtCzZGlfyVWWh8mLHkoxzjsB6DDNnvdL+fW8MiwPEJyGJQDgQ==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dev: true
-
-  /@typescript-eslint/visitor-keys@5.62.0:
-    resolution: {integrity: sha512-07ny+LHRzQXepkGg6w0mFY41fVUNBrL2Roj/++7V1txKugfjm/Ci/qSND03r2RhlJhJYMcTn9AhhSSqQp0Ysyw==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dependencies:
-      '@typescript-eslint/types': 5.62.0
-      eslint-visitor-keys: 3.4.3
-    dev: true
-
   /acorn-jsx@5.3.2(acorn@8.10.0):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -2508,31 +2489,10 @@ packages:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
     dev: true
 
-  /flow-api-translator@0.15.1(prettier-plugin-hermes-parser@0.15.1)(prettier@3.0.0):
-    resolution: {integrity: sha512-qDXrqPcSw0bkCU17NiZs1jHWZ3mTD3xx//qGLFccA8Jq5sNvlWB0uYRU+w/xMC5/IRw6DROPq6IefCPE0zv5RA==}
-    peerDependencies:
-      prettier: ^3.0.0 || ^2.7.1
-    dependencies:
-      '@babel/code-frame': 7.22.13
-      '@typescript-eslint/visitor-keys': 5.62.0
-      flow-enums-runtime: 0.0.6
-      hermes-eslint: 0.15.1
-      hermes-estree: 0.15.1
-      hermes-parser: 0.15.1
-      hermes-transform: 0.15.1(prettier-plugin-hermes-parser@0.15.1)(prettier@3.0.0)
-      prettier: 3.0.0
-    transitivePeerDependencies:
-      - prettier-plugin-hermes-parser
-    dev: true
-
-  /flow-bin@0.215.1:
-    resolution: {integrity: sha512-Q8Ed0w492tI9O/US11bC2Gtme0gkK/RNZBLTXBgSnRo3JaQor2cPRcKcwQX2mPBoV9/KrtAVVCnhzu4zTpkWTg==}
+  /flow-bin@0.205.1:
+    resolution: {integrity: sha512-pGQ/ZFr9hnbhRmc+K3K1Ui9BwDivlesNEd2mZbm5pCnxEUvbbj9nXHlTD4s4qO0k+LBKYLMZzQwBVYyRUE380g==}
     engines: {node: '>=0.10.0'}
     hasBin: true
-    dev: true
-
-  /flow-enums-runtime@0.0.6:
-    resolution: {integrity: sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==}
     dev: true
 
   /fs-readdir-recursive@1.1.0:
@@ -2655,22 +2615,6 @@ packages:
     resolution: {integrity: sha512-38Re105dr4UZ0/EPRApWxtIOWWynQpdOYWO+7nFO8ADd2mXdaHKMCFAxIjkqACa1GLrAtrXqqaJdUYHi/QUbkA==}
     dependencies:
       hermes-estree: 0.15.1
-    dev: true
-
-  /hermes-transform@0.15.1(prettier-plugin-hermes-parser@0.15.1)(prettier@3.0.0):
-    resolution: {integrity: sha512-f2mT55uL7y7WcQ6oUNXMPI4ehs1j85Ox1eVuUSQWGFzIfPKM0xCcHRd6sLOAKTI7LfUnlGxKhTWwPIooP9fi1A==}
-    peerDependencies:
-      prettier: ^3.0.0 || ^2.7.1
-      prettier-plugin-hermes-parser: 0.15.1
-    dependencies:
-      '@babel/code-frame': 7.22.13
-      esquery: 1.5.0
-      flow-enums-runtime: 0.0.6
-      hermes-eslint: 0.15.1
-      hermes-estree: 0.15.1
-      hermes-parser: 0.15.1
-      prettier: 3.0.0
-      prettier-plugin-hermes-parser: 0.15.1(prettier@3.0.0)
     dev: true
 
   /html-escaper@2.0.2:
@@ -3566,16 +3510,6 @@ packages:
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
-    dev: true
-
-  /prettier-plugin-hermes-parser@0.15.1(prettier@3.0.0):
-    resolution: {integrity: sha512-tEDBu10sUkRFOBPv8kOe6LFMzNActs1UBT9Ypc8cGD7eOyXwvPOyx9Q2uoIpTX4MxeITdgOm8q94t/PQ1Yz0ww==}
-    peerDependencies:
-      prettier: ^3.0.0 || ^2.7.1
-    dependencies:
-      hermes-estree: 0.15.1
-      hermes-parser: 0.15.1
-      prettier: 3.0.0
     dev: true
 
   /prettier@3.0.0:

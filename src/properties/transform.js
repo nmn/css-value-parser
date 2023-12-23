@@ -1,7 +1,7 @@
 // @flow strict
 
-import { Parser } from '../core';
-import { TransformFunction } from '../css-types/transform-function';
+import { Parser } from '../core.js';
+import { TransformFunction } from '../css-types/transform-function.js';
 
 export class Transform {
   +value: $ReadOnlyArray<TransformFunction>;

@@ -1,8 +1,8 @@
 [ignore]
 .*/malformed_package_json/.*
-.*/lib/.*
 
 [include]
+./src/core.ts
 
 [libs]
 

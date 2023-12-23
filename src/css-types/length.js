@@ -1,6 +1,6 @@
 // @flow strict
 
-import { Parser } from '../core';
+import { Parser } from '../core.js';
 import { number } from './number';
 
 // All units are numberic
